@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-const message=ref('123');
+const message=ref('');
 const socket = new WebSocket('ws://192.168.41.231:8081/api/chat');
 
 socket.onopen = function(e) {
