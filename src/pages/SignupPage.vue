@@ -7,9 +7,17 @@
 <script setup>
 import axios from 'axios';
 import {ref} from 'vue'
+import Swal from 'sweetalert2'
 const username=ref('');
 const password=ref('');
 const signup = () => {
-    axios.post('http://127.0.0.1:8080/signup',{username:username.value,password:password.value});
+    axios.post('http://192.168.41.231:8081/api/signup',{username:username.value,password:password.value}).then((res)=>{
+        Swal.fire(res.data.msg);
+    });
 }
 </script>
+<style scoped>
+.swal2-container {
+  z-index: 10000 !important;
+}
+</style>
