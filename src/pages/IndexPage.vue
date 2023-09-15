@@ -8,12 +8,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 const message=ref('');
-const socket = new WebSocket('ws://192.168.41.231:8081/api/chat');
+const token = localStorage.getItem('token');
+const abc='abc';
+const socket = new WebSocket('ws://127.0.0.1:8081/api/chat',[token]);
 
+//'Authorization', 'Bearer '+localStorage.getItem('token')
 socket.onopen = function(e) {
   console.log("[open] Connection established");
   console.log("Sending to server");
-  socket.send("My name is John");
 };
 
 socket.onmessage = function(event) {
