@@ -11,7 +11,7 @@
         />
 
         <q-toolbar-title>
-          Flypen
+          {{route.params.id}}
         </q-toolbar-title>
 
         <div>C++ Course Design</div>
@@ -27,9 +27,13 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-  </q-layout>
-</template>
+  </q-layout></template>
 
 <script setup lang="ts">
-
+import {useRoute} from 'vue-router'
+const route = useRoute();
 </script>
+
+<style scoped lang="scss">
+
+</style>

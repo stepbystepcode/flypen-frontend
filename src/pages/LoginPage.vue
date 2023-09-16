@@ -8,7 +8,7 @@
             <q-input outlined v-model="password" style="width: 80vw" label="password"></q-input>
             <div class="row flex-center justify-between" style="width: 95%">
                 <div><a href="/signup" class="text-primary text-bold" style="text-decoration: none">Create account</a></div>
-                <q-btn @click="login" class="bg-primary text-white text-bold">登录</q-btn>
+                <q-btn @click="login" class="bg-primary text-white text-bold">login</q-btn>
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@ const username = ref('');
 const password = ref('');
 const login = () => {
     axios
-        .post('http://127.0.0.1:8081/api/login', {
+        .post('http://192.168.31.56:8081/api/login', {
             username: username.value,
             password: password.value,
         })
@@ -39,7 +39,4 @@ const login = () => {
 };
 </script>
 <style scoped>
-.swal2-container {
-    z-index: 10000 !important;
-}
 </style>
