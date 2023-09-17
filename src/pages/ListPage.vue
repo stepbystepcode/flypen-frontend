@@ -1,36 +1,42 @@
 <template>
-  <q-page class="column">
+  <q-page class="column" v-if="list">
     <div class="row person items-center" v-for="(person, i) in list" :key="i">
-      <div @click="router.push(`/chat/person/${person}`)" style="width: 100vw;"><q-avatar class="q-ma-md"> <img
-            :src="`https://api.ayao.ltd/head-portrait/api.php?a=${Math.ceil(Math.random()*10)}`"></q-avatar>
-        <span style="font-size: 1.2em;">{{ person }}</span><q-separator />
+      <div @click="router.push(`/chat/person/${person.username}`)" style="width: 100vw;">
+        <q-avatar class="q-ma-md"><img
+          :src="`/avatar/${person.avatar}.jpeg`" alt=""></q-avatar>
+        <span style="font-size: 1.2em;">{{ person.username }}</span>
+        <q-separator/>
       </div>
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import {ref} from 'vue'
 import {useRouter} from 'vue-router';
 import axios from 'axios';
-const router=useRouter();
-const list = 'lglglglgy,zzc20001'.split(',');
-const sendMessage = async () => {
-  const token = localStorage.getItem('token')
-  try {
-    await axios.post('http://127.0.0.1:8081/api/list', {
-      //receiver: receiver.value
+
+const router = useRouter();
+const list = ref();
+const token = localStorage.getItem('token')
+const username = localStorage.getItem('username')
+try {
+
+  axios.post('http://127.0.0.1:8081/api/info', {
+      person: ''
     }, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application-json'
       }
     }
-    )
+  ).then(res => {
+    if (username){list.value = res.data[username].friends;
+    localStorage.setItem('avatar', res.data[username].avatar);}
+  })
 
-  } catch (error) {
-    console.log(error)
-  }
+} catch (error) {
+  console.log(error)
 }
 //'Authorization', 'Bearer '+localStorage.getItem('token')
 </script>

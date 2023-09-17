@@ -8,6 +8,7 @@
           round
           icon="menu"
           aria-label="Menu"
+          @click="toggleLeftDrawer"
         />
 
         <q-toolbar-title>
@@ -21,6 +22,7 @@
     <q-drawer
       show-if-above
       bordered
+      v-model="leftDrawerOpen"
     >
     </q-drawer>
 
@@ -31,5 +33,10 @@
 </template>
 
 <script setup lang="ts">
+import {ref} from 'vue';
+const leftDrawerOpen = ref(false)
 
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value
+}
 </script>

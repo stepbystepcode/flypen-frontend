@@ -5,7 +5,7 @@
             <div class="text-h5">Sign in</div>
             <span>Use your Flypen Account</span>
             <q-input outlined v-model="username" style="width: 80vw" label="username"></q-input>
-            <q-input outlined v-model="password" style="width: 80vw" label="password"></q-input>
+            <q-input outlined v-model="password" type="password" style="width: 80vw" label="password"></q-input>
             <div class="row flex-center justify-between" style="width: 95%">
                 <div><a href="/signup" class="text-primary text-bold" style="text-decoration: none">Create account</a></div>
                 <q-btn @click="login" class="bg-primary text-white text-bold">login</q-btn>
@@ -28,8 +28,9 @@ const login = () => {
         .then((res) => {
             const success = res.data.msg.includes('Success');
             if(success) {
-                localStorage.setItem('token', res.data.token);
-                window.location.href = '/';
+              localStorage.setItem('username', res.data.username);
+              localStorage.setItem('token', res.data.token);
+              window.location.href = '/';
             }
             Swal.fire({
                 title: res.data.msg,
