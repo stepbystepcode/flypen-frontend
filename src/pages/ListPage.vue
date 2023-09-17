@@ -2,7 +2,7 @@
   <q-page class="column">
     <div class="row person items-center" v-for="(person, i) in list" :key="i">
       <div @click="router.push(`/chat/person/${person}`)" style="width: 100vw;"><q-avatar class="q-ma-md"> <img
-            :src="`https://cdn.quasar.dev/img/avatar${i + 1}.jpg`"></q-avatar>
+            :src="`https://api.ayao.ltd/head-portrait/api.php?a=${Math.ceil(Math.random()*10)}`"></q-avatar>
         <span style="font-size: 1.2em;">{{ person }}</span><q-separator />
       </div>
     </div>
