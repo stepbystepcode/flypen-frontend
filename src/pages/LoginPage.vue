@@ -30,7 +30,7 @@ const login = () => {
             if(success) {
               localStorage.setItem('username', res.data.username);
               localStorage.setItem('token', res.data.token);
-              window.location.href = '/';
+              window.location.href = '/chat';
             }
             Swal.fire({
                 title: res.data.msg,

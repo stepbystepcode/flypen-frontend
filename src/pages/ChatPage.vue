@@ -1,9 +1,9 @@
 <template>
   <q-page class="column">
-    <div v-if="history&&info" id="content" style="flex:1;background: url(/bg.png);background-size: cover;"
+    <div v-if="store" id="content" style="flex:1;background: url(/bg.png);background-size: cover;"
          class="q-pa-md q-mb-xl">
       <q-chat-message v-for="(item, i) in store.history[route.params.id]" :key="i"
-                      :avatar="`/avatar/${item.sender == route.params.id?info[item.sender].avatar:myAvatar}.jpeg`"
+                      :avatar="`/avatar/${item.sender == route.params.id?yourAvatar:myAvatar}.jpeg`"
                       :text="[item.content]" :stamp="item.time"
                       :sent="item.sender != route.params.id"/>
     </div>
@@ -22,6 +22,7 @@ import axios from 'axios';
 import {useRoute} from 'vue-router'
 
 const myAvatar = localStorage.getItem('avatar');
+const yourAvatar = ref('');
 const history = ref();
 const route = useRoute();
 const message = ref('');
@@ -49,7 +50,8 @@ onMounted(() => {
       person: route.params.id
     }, config
   ).then((res) => {
-    info.value = res.data
+    info.value = res.data[route.params.id];
+    yourAvatar.value = info.value.avatar;
   });
   setTimeout(()=>{
     window.scrollTo(0, document.body.scrollHeight)
