@@ -2,7 +2,7 @@
   <q-page class="column">
     <div v-if="history&&info" id="content" style="flex:1;background: url(/bg.png);background-size: cover;"
          class="q-pa-md q-mb-xl">
-      <q-chat-message v-for="(item, i) in history[route.params.id]" :key="i"
+      <q-chat-message v-for="(item, i) in store.history[route.params.id]" :key="i"
                       :avatar="`/avatar/${item.sender == route.params.id?info[item.sender].avatar:myAvatar}.jpeg`"
                       :text="[item.content]" :stamp="item.time"
                       :sent="item.sender != route.params.id"/>
@@ -33,17 +33,18 @@ const config = {
     'Content-Type': 'application-json'
   }
 }
-
-const update = () => {
-  axios.post('http://127.0.0.1:8081/api/check', {
-      person: route.params.id
-    }, config
-  ).then((res) => {
-    history.value = res.data
-  })
-}
+import { useCheckStore } from 'stores/check';
+const store = useCheckStore();
+// const update = () => {
+//   axios.post('http://127.0.0.1:8081/api/check', {
+//       person: route.params.id
+//     }, config
+//   ).then((res) => {
+//     history.value = res.data
+//   })
+// }
 onMounted(() => {
-  setInterval(update, 500);
+  // setInterval(update, 500);
   axios.post('http://127.0.0.1:8081/api/info', {
       person: route.params.id
     }, config

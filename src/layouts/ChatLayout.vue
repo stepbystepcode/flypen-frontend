@@ -73,9 +73,9 @@
 
 <script setup lang="ts">
 import {useRoute} from 'vue-router'
-
+import axios from 'axios';
 const route = useRoute();
-import {ref} from 'vue';
+import {ref,onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 const router=useRouter();
 
@@ -93,6 +93,21 @@ function logout() {
   localStorage.removeItem('avatar');
   router.push('/login')
 }
+// const token = localStorage.getItem('token')
+// const config = {
+//   headers: {
+//     'Authorization': `Bearer ${token}`
+//   }
+// }
+// const update = () => {
+//   axios.post('http://127.0.0.1:8081/api/check', null, config
+//   ).then((res) => {
+//     history.value = res.data
+//   })
+// }
+
+
+
 </script>
 
 <style scoped lang="scss">
