@@ -5,21 +5,45 @@
       <div class="text-h5">Create a Flypen Account</div>
       <span>Enter your name</span>
       <q-form>
-      <q-input outlined v-model="username" :rules="[val => !!val || 'Field is required']" style="width: 80vw" label="username"></q-input>
-      <q-input outlined v-model="password" :rules="[val => !!val || 'Field is required']" type="password" style="width: 80vw" label="password"></q-input>
-      <div class="row flex-center justify-between" style="width: 95%">
-        <div><a href="/login" class="text-primary text-bold" style="text-decoration: none">Go to Login</a></div>
-        <q-btn type="submit" @click="signup" class="bg-primary text-white text-bold">signup</q-btn>
-      </div></q-form>
+        <q-input outlined v-model="username" :rules="[val => !!val || 'Field is required']" style="width: 80vw"
+                 label="username"></q-input>
+        <q-input outlined v-model="password" :rules="[val => !!val || 'Field is required']" type="password"
+                 style="width: 80vw" label="password"></q-input>
+        <div class="row flex-center justify-between" style="width: 95%">
+          <div><a href="/login" class="text-primary text-bold" style="text-decoration: none">Go to Login</a></div>
+          <q-btn @click="router.push('/avatar')" class="bg-primary text-white">next</q-btn>
+        </div>
+      </q-form>
+      <div id="selector" v-show="false">
+        <div style="display: grid;grid-template-rows: repeat(4,1fr);grid-template-columns: repeat(4,1fr)">
+          <div v-for="i in 40" :key="i" @click="console.log(i);selectAvatar(i)">
+            <img :src="`/avatar/${i}.jpeg`" alt="" style="width: 50px; height: 50px; margin: 5px">
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import {ref} from 'vue';
 import Swal from 'sweetalert2';
+import {useRouter} from 'vue-router';
+const router = useRouter();
 const username = ref('');
 const password = ref('');
+const avatar = ref(0);
+const selectAvatar = (num) => {
+  avatar.value = num;
+  Swal.close();
+};
+const chooseAvatar = () => {
+  Swal.fire({
+    title: 'Choose your avatar',
+    showConfirmButton: false,
+    html: document.querySelector('#selector').innerHTML
+  });
+};
 const signup = () => {
   axios
     .post('http://127.0.0.1:8081/api/signup', {

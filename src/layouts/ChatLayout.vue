@@ -37,11 +37,11 @@
           </q-item-section>
           <q-item-section>Profile</q-item-section>
         </q-item>
-        <q-item clickable v-ripple>
+        <q-item clickable v-ripple @click="router.push('/chat/newfriends')">
           <q-item-section avatar>
             <q-icon name="group" color="primary"></q-icon>
           </q-item-section>
-          <q-item-section>New Group</q-item-section>
+          <q-item-section>New Friends</q-item-section>
         </q-item>
         <q-item clickable v-ripple @click="router.push('/chat')">
           <q-item-section avatar>

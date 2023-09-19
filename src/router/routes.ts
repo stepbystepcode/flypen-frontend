@@ -5,13 +5,15 @@ const routes: RouteRecordRaw[] = [
     path: '/chat',
     component: () => import('layouts/ChatLayout.vue'),
     children: [{ path: '/chat', component: () => import('pages/ListPage.vue') },
-    { path: '/chat/person/:id', component: () => import('pages/ChatPage.vue') }]
+    { path: '/chat/person/:id', component: () => import('pages/ChatPage.vue') },
+    { path: '/chat/newfriends', component: () => import('pages/NewFriends.vue') }]
   },
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '/', component: () => import('pages/IndexPage.vue') },
     { path: '/signup', component: () => import('pages/SignupPage.vue') },
+    { path: '/avatar', component: () => import('pages/AvatarPage.vue') },
     { path: '/login', component: () => import('pages/LoginPage.vue') }],
   },
 

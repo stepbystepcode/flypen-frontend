@@ -38,5 +38,4 @@ try {
 } catch (error) {
   console.log(error)
 }
-//'Authorization', 'Bearer '+localStorage.getItem('token')
 </script>
