@@ -8,7 +8,7 @@
                       :sent="item.sender != route.params.id"/>
     </div>
     <div class="row fixed bg-white window-width" style="bottom:0">
-      <q-input borderless v-model="message" placeholder="Message" style="flex:1" class="q-px-md"></q-input>
+      <q-input borderless v-model="message" placeholder="Message" style="flex:1" class="q-px-md" @keyup.enter="sendMessage()"></q-input>
       <q-btn @click="sendMessage()" flat :disable="!message.length">
         <q-icon color="primary" name="send"></q-icon>
       </q-btn>
@@ -23,7 +23,6 @@ import {useRoute} from 'vue-router'
 
 const myAvatar = localStorage.getItem('avatar');
 const yourAvatar = ref('');
-const history = ref();
 const route = useRoute();
 const message = ref('');
 const info = ref();
@@ -60,6 +59,7 @@ onMounted(() => {
 
 const sendMessage = async () => {
   try {
+    if(!message.value.length) return;
     await axios.post('http://127.0.0.1:8081/api/chat', {
         content: message.value,
         receiver: route.params.id

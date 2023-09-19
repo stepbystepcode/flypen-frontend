@@ -20,10 +20,8 @@
 
 <script setup lang="ts">
 import {ref} from 'vue'
-import {useRouter} from 'vue-router';
 import axios from 'axios';
 
-const router = useRouter();
 const list = ref();
 const search = ref('');
 const token = localStorage.getItem('token')

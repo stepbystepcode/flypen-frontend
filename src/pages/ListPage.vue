@@ -31,8 +31,10 @@ try {
       }
     }
   ).then(res => {
-    if (username){list.value = res.data[username].friends;
-    localStorage.setItem('avatar', res.data[username].avatar);}
+    if (username){
+      list.value = res.data[username].friends;
+      localStorage.setItem('avatar', res.data[username].avatar);
+    }
   })
 
 } catch (error) {

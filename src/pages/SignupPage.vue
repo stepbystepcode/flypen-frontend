@@ -32,10 +32,17 @@ const signup = () => {
       password: password.value,
     })
     .then((res) => {
-      Swal.fire({
+      const success = res.data.msg.includes('Success');
+      if (success){
+        localStorage.setItem('token',res.data.token);
+        Swal.fire({
+          title: res.data.msg,
+          icon: 'success',
+        }).then(()=>{router.push('/avatar')});
+      }else Swal.fire({
         title: res.data.msg,
-        icon: res.data.msg.includes('Success') ? 'success' : 'error',
-      }).then(res=>{router.push('/avatar')});
+        icon: 'error',
+      });
     });
 };
 </script>

@@ -26,7 +26,7 @@
     >
       <div class="bg-primary column">
         <div class="q-pa-lg">
-          <q-avatar v-if="username" size="60px"><img :src="`/avatar/${avatar}.jpeg`" alt=""></q-avatar>
+          <q-avatar @click="router.push('/avatar')" v-if="username && avatar" size="60px"><img :src="`/avatar/${avatar}.jpeg`" alt=""></q-avatar>
         </div>
         <div class="q-px-lg text-white text-h6 q-pb-md">{{ username }}</div>
       </div>
@@ -73,14 +73,16 @@
 
 <script setup lang="ts">
 import {useRoute} from 'vue-router'
-import axios from 'axios';
 const route = useRoute();
-import {ref,onMounted} from 'vue';
+import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 const router=useRouter();
 
 const leftDrawerOpen = ref(false);
-const avatar = ref(localStorage.getItem('avatar'));
+const avatar = ref();
+setTimeout(() => {
+  avatar.value = localStorage.getItem('avatar')
+}, 500);
 const username = ref(localStorage.getItem('username')||' ');
 
 function toggleLeftDrawer() {
