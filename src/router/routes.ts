@@ -4,7 +4,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/file',
     component: () => import('layouts/FileLayout.vue'),
-    children: [{ path: '/file/explorer', component: () => import('pages/FilePage.vue') }]
+    children: [{ path: '/file/editor', component: () => import('pages/EditorPage.vue') },{ path: '/file/explorer', component: () => import('pages/FilePage.vue') }]
   },
   {
     path: '/chat',
