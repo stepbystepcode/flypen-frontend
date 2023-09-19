@@ -2,6 +2,11 @@ import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
+    path: '/file',
+    component: () => import('layouts/FileLayout.vue'),
+    children: [{ path: '/file/explorer', component: () => import('pages/FilePage.vue') }]
+  },
+  {
     path: '/chat',
     component: () => import('layouts/ChatLayout.vue'),
     children: [{ path: '/chat', component: () => import('pages/ListPage.vue') },

@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          {{ route.params.id }}
+
         </q-toolbar-title>
 
         <div>C++ Course Design</div>
@@ -49,7 +49,7 @@
           </q-item-section>
           <q-item-section>Contacts</q-item-section>
         </q-item>
-        <q-item clickable v-ripple @click="router.push('/wiki')">
+        <q-item clickable v-ripple @click="router.push('/file/explorer')">
           <q-item-section avatar>
             <q-icon name="book" color="primary"></q-icon>
           </q-item-section>
@@ -101,20 +101,6 @@ function logout() {
   localStorage.removeItem('avatar');
   router.push('/login')
 }
-// const token = localStorage.getItem('token')
-// const config = {
-//   headers: {
-//     'Authorization': `Bearer ${token}`
-//   }
-// }
-// const update = () => {
-//   axios.post('http://127.0.0.1:8081/api/check', null, config
-//   ).then((res) => {
-//     history.value = res.data
-//   })
-// }
-
-
 
 </script>
 

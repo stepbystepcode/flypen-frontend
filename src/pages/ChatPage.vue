@@ -1,9 +1,15 @@
 <template>
   <q-page class="column">
-    <div v-if="store" id="content" style="flex:1;background: url(/bg.png);background-size: cover;"
-         class="q-pa-md q-mb-xl">
+    <div class="tgme_background_wrap">
+      <canvas id="tgme_background" class="tgme_background default" width="50" height="50" data-colors="9fb0ea,bbead5,b0cdeb,b2e3dd"></canvas>
+      <div style="background-image: url('/bg.svg')" class="tgme_background_pattern default"></div>
+    </div>
+<!--    <div v-if="store" id="content" style="flex:1;background: url(/bg.svg)"-->
+<!--         class="q-pa-md q-mb-xl">-->
+    <div class=" q-pa-md q-mb-xl">
       <q-chat-message v-for="(item, i) in store.history[route.params.id]" :key="i"
                       :avatar="`/avatar/${item.sender == route.params.id?yourAvatar:myAvatar}.jpeg`"
+                      :bg-color="`${item.sender == route.params.id?'white':'info'}`"
                       :text="[item.content]" :stamp="item.time"
                       :sent="item.sender != route.params.id"/>
     </div>
@@ -17,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+import myBg from '../boot/bg.js';
 import {onMounted, ref} from 'vue'
 import axios from 'axios';
 import {useRoute} from 'vue-router'
@@ -34,6 +41,9 @@ const config = {
   }
 }
 import { useCheckStore } from 'stores/check';
+import Swal from "sweetalert2";
+import {useRouter} from "vue-router";
+const router=useRouter();
 const store = useCheckStore();
 // const update = () => {
 //   axios.post('http://127.0.0.1:8081/api/check', {
@@ -49,12 +59,24 @@ onMounted(() => {
       person: route.params.id
     }, config
   ).then((res) => {
+    const username=localStorage.getItem('username');
+    if (!res.data[username].friends.find(item => item.username === route.params.id)){
+      Swal.fire({
+        title: 'Oops...',
+        text: 'You are not friends with this person!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      }).then(()=>{
+        router.push('/chat')
+      });
+    }
     info.value = res.data[route.params.id];
     yourAvatar.value = info.value.avatar;
   });
   setTimeout(()=>{
     window.scrollTo(0, document.body.scrollHeight)
   },1000);
+    myBg.init();
 })
 
 const sendMessage = async () => {
@@ -79,3 +101,28 @@ const sendMessage = async () => {
 
 
 </script>
+<style scoped lang="scss">
+
+.tgme_background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.tgme_background_pattern.default {
+  opacity: 0.3;
+  background-image: url(/bg.svg);
+}
+.tgme_background_pattern {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: overlay;
+  background: center repeat;
+  background-size: 420px auto;
+}
+</style>
