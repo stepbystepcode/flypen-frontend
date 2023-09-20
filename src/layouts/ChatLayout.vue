@@ -5,7 +5,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          {{ route.params.id }}
+          {{ route.params.id?route.params.id:'Flypen Chat' }}
         </q-toolbar-title>
 
         <div>C++ Course Design</div>

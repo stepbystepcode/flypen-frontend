@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-
+           Flypen Wiki
         </q-toolbar-title>
 
         <div>C++ Course Design</div>
