@@ -27,7 +27,7 @@ const search = ref('');
 const token = localStorage.getItem('token')
 const username = localStorage.getItem('username')
 const request=(atti:string)=>{
-  axios.post(`http://127.0.0.1:8081/api/newfriends?username=${search.value}&operation=${atti}`, {}, {
+  axios.post(`http://192.168.184.81:8081/api/newfriends?username=${search.value}&operation=${atti}`, {}, {
       headers: {
         'Authorization': `Bearer ${token}`,
       }
@@ -38,7 +38,7 @@ const request=(atti:string)=>{
 
 }
 const handle=(req:string,atti:string)=>{
-  axios.post(`http://127.0.0.1:8081/api/nfmgr?info=${atti}&username=${req}`, {},{
+  axios.post(`http://192.168.184.81:8081/api/nfmgr?info=${atti}&username=${req}`, {},{
     headers:{
       'Authorization': `Bearer ${token}`,
     }
@@ -49,7 +49,7 @@ const handle=(req:string,atti:string)=>{
 }
 try {
 
-  axios.post('http://127.0.0.1:8081/api/info', {
+  axios.post('http://192.168.184.81:8081/api/info', {
       person: ''
     }, {
       headers: {

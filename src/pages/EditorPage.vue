@@ -42,9 +42,14 @@ const select = (file) => {
       // 如果是文件,更新最后选择  
       lastSelect.value = filename.value;
     }
+axios.post(`http://192.168.184.81:8081/api/file/cat?path=${filename.value}`).then(res => {
+  console.log(res.data);
+  content.value=res.data;
+})
     console.log(node);
 }
-axios.post('http://127.0.0.1:8081/api/file/tree').then(res => {
+axios.post('http://192.168.184.81:8081/api/file/tree').then(res => {
+  console.log(res.data);
   raw.value = res.data;
   transform(raw.value[0]);
   raw.value.pop();

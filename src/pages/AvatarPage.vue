@@ -25,7 +25,7 @@ const selectAvatar = (num) => {
 };
 const setAvatar = () => {
   axios
-    .post(`http://127.0.0.1:8081/api/avatar?avatar=${avatar.value}`, {},{headers:{
+    .post(`http://192.168.184.81:8081/api/avatar?avatar=${avatar.value}`, {},{headers:{
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
     }})
     .then((res) => {
