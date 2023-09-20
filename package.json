@@ -15,6 +15,7 @@
   "dependencies": {
     "@quasar/extras": "^1.16.4",
     "axios": "^1.2.1",
+    "mavon-editor": "^3.0.0",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "socket.io-client": "^4.7.2",

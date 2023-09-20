@@ -1,38 +1,69 @@
 <template>
-  <div class="container">
-    <div class="content">
-      <div class="box">
-        <span>标题</span>
-        <input type="text" class="input" v-model="title">
-      </div>
-      <div class="box">
-        <span>你的问题是什么？</span>
-        <span>请详细描述你的问题，至少20字。</span>
-        <Editor v-model="content" @imgAdd="imgAdd" />
-        <br>
-        <span>空格键添加标签，最多5个</span>
-        <div class="input"
-             :style="tagfocus ? 'border: 1px solid #6bbbf7;box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15); ' : ''">
-          <div v-for="tag in tags" :key="tag" class="pill">#{{ tag }}</div>
-          <input type="text" v-model="tag" @keydown.space.prevent="handleKeydown()" @keydown.delete="del()"
-                 @focus="tagfocus = true" @blur="tagfocus = false">
+  <div class="row no-wrap">
+    <div class="q-pa-md q-gutter-sm">
+      <q-tree v-if="final" ref="tree" :nodes="final" node-key="label" style="min-width: 27vw;max-width: 27vw;"
+        selected-color="primary" v-model:selected="filename" @update:selected="select(filename)" default-expand-all />
+    </div>
+    <div class="container">
+      <div class="content">
+        <div class="box">
+          <span>file name</span>
+          <input type="text" class="input" v-model="filename">
         </div>
-        <button @click="check()">提交</button>
+        <div class="box">
+          <Editor v-model="content" @imgAdd="imgAdd" />
+          <div class="q-mt-md row justify-end">
+            <q-btn class="bg-primary text-white" style="width: 5rem;" @click="check()">Save</q-btn>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import Editor from 'components/EditorComponent.vue'
+import Editor from '../components/EditorComponent.vue'
 import { ref } from 'vue';
 import axios from 'axios';
-import swal from 'sweetalert2'
-let title = ref('');
+import Swal from 'sweetalert2'
+const raw = ref();
+const final = ref();
+const lastSelect = ref();
+const filename = ref('');
+const tree = ref(null);
+const select = (file) => {
+  if(filename.value==null) return;
+    const node = tree.value.getNodeByKey(file);
+    if (node.icon === 'folder') {
+      // 如果是文件夹,选择保持为上一次选择
+      tree.value.setExpanded(file, !tree.value.isExpanded(file));
+      filename.value = lastSelect.value;
+    } else {
+      // 如果是文件,更新最后选择  
+      lastSelect.value = filename.value;
+    }
+    console.log(node);
+}
+axios.post('http://127.0.0.1:8081/api/file/tree').then(res => {
+  raw.value = res.data;
+  transform(raw.value[0]);
+  raw.value.pop();
+  final.value = raw.value;
+})
+function transform(item) {
+  delete item.type;
+  item.label = item.name;
+  delete item.name;
+  if (item.contents) {
+    item.icon = 'folder';
+    item.children = item.contents;
+    delete item.contents;
+    item.children.forEach(transform);
+  } else item.icon = 'insert_drive_file';
+}
+
+
 let content = ref('');
-const tags = ref([]);
-const tag = ref('');
-const tagfocus = ref(false);
 const imgnum = ref(0);
 const imgAdd = (pos, file) => {
   console.log(file);
@@ -49,42 +80,25 @@ const imgAdd = (pos, file) => {
     imgnum.value++;
   })
 }
-const del = () => {
-  if (tag.value == '') tags.value.pop()
-}
-const handleKeydown = () => {
-  if (!tags.value.includes(tag.value)) {
-    tag.value = tag.value.replace(/\s/g, "");
-    tags.value.push(tag.value)
-  }
-  tag.value = "";
-}
 const check = () => {
-  if (content.value.length < 20) swal("提问内容至少20字哦", "详细的描述有助于更好表达您的问题", "info")
-  else if (title.value == '') swal("请输入标题", "标题能让人一目了然您的问题", "info")
-  else if (tags.value.length == 0) swal("请添加几个标签", "添加合适的标签可以快速定位您的问题", "info")
-  else if (tags.value.length > 5) swal("最多添加5个标签", "", "info")
+  if (content.value.length === 0) Swal.fire('Content is empty', 'info')
+  else if (filename.value == '') Swal.fire('Please input filename', 'info')
   else submint()
 }
 let submint = () => {
-  if (content.value != "" && title.value != "") {
+  if (content.value != '' && title.value != '') {
     const json = JSON.stringify({
       content: content.value,
-      title: title.value,
-      tags: Array.from(tags.value),
-      user: store.state.user,
-      views: 0,
-      answers: 0,
-      modified: 0,
-      time: new Date().getTime(),
-      votes: 0
+      filename: title.value,
+      time: new Date().getTime()
     });
     axios.post('https://www.codehelp.cn:3000/api/ask', json, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     });
-    swal('提问成功', '', 'success').then(window.location.reload())
+    Swal.fire('Save success', '', 'success').then(window.location.reload())
   }
 }
 </script>
@@ -130,25 +144,6 @@ let submint = () => {
     }
   }
 
-  button {
-
-    border: 1px solid #7aa7c7;
-    box-shadow: inset 0 1px 0 0 hsla(0, 0%, 100%, 0.7);
-    padding: 10px;
-    font-size: .9em;
-    color: #39739d;
-    margin: 2.3em 0;
-    text-decoration: none;
-    border-radius: 3px;
-
-    background: #0a95ff;
-    color: #fff;
-    width: 60px;
-
-    &:hover {
-      background: #0074cc;
-    }
-  }
 }
 
 .pill {
