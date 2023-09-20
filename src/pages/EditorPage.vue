@@ -2,7 +2,8 @@
   <div class="row no-wrap">
     <div class="q-pa-md q-gutter-sm">
       <q-tree v-if="final" ref="tree" :nodes="final" node-key="label" style="min-width: 27vw;max-width: 27vw;"
-        selected-color="primary" v-model:selected="filename" @update:selected="select(filename)" default-expand-all />
+              selected-color="primary" v-model:selected="filename" @update:selected="select(filename)"
+              default-expand-all/>
     </div>
     <div class="container">
       <div class="content">
@@ -11,9 +12,9 @@
           <input type="text" class="input" v-model="filename">
         </div>
         <div class="box">
-          <Editor v-model="content" @imgAdd="imgAdd" />
+          <Editor style="z-index: 50" v-model="content" @imgAdd="imgAdd"/>
           <div class="q-mt-md row justify-end">
-            <q-btn class="bg-primary text-white" style="width: 5rem;" @click="check()">Save</q-btn>
+            <q-btn class="bg-primary text-white" style="width: 5rem;" @click="save()">Save</q-btn>
           </div>
         </div>
       </div>
@@ -23,43 +24,86 @@
 
 <script setup>
 import Editor from '../components/EditorComponent.vue'
-import { ref } from 'vue';
+import {ref} from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2'
+
 const raw = ref();
 const final = ref();
 const lastSelect = ref();
 const filename = ref('');
 const tree = ref(null);
-const select = (file) => {
-  if(filename.value==null) return;
-    const node = tree.value.getNodeByKey(file);
-    if (node.icon === 'folder') {
-      // 如果是文件夹,选择保持为上一次选择
-      tree.value.setExpanded(file, !tree.value.isExpanded(file));
-      filename.value = lastSelect.value;
-    } else {
-      // 如果是文件,更新最后选择  
-      lastSelect.value = filename.value;
-    }
-axios.post(`http://192.168.184.81:8081/api/file/cat?path=${filename.value}`).then(res => {
-  console.log(res.data);
-  content.value=res.data;
-})
-    console.log(node);
+const path = ref('');
+const save = () => {
+  if (filename.value === '') Swal.fire('Please input filename', '','warning')
+  else if (content.value === '') Swal.fire('Content is empty', '','warning')
+  else {
+    Swal.fire({
+      title: 'Confirm save?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor:'#1976D2',
+      cancelButtonColor:'#868686',
+      reverseButtons:true,
+      confirmButtonText: 'Save',
+    }).then((result) => {
+      if(result.isDismissed) return;
+      const json = JSON.stringify({
+        content: content.value,
+        filename: path.value,
+        //time: new Date().getTime()
+      });
+      axios.post('http://127.0.0.1:8081/api/file/save', json, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(() => {
+        Swal.fire('Save success', '', 'success').then(() => window.location.reload())
+      })
+    });
+  }
 }
-axios.post('http://192.168.184.81:8081/api/file/tree').then(res => {
-  console.log(res.data);
+const select = (file) => {
+  if (filename.value == null) return;
+  const node = tree.value.getNodeByKey(file);
+  if (node.icon === 'folder') {
+    // 如果是文件夹,选择保持为上一次选择
+    tree.value.setExpanded(file, !tree.value.isExpanded(file));
+    filename.value = lastSelect.value;
+  } else {
+    // 如果是文件,更新最后选择
+    lastSelect.value = filename.value;
+  }
+  path.value = getNodePath(final.value, filename.value).slice(5)
+  axios.post(`http://127.0.0.1:8081/api/file/cat?path=${path.value}`).then(res => {
+    content.value = res.data.toString();
+  })
+}
+axios.post('http://127.0.0.1:8081/api/file/tree').then(res => {
   raw.value = res.data;
   transform(raw.value[0]);
   raw.value.pop();
   final.value = raw.value;
 })
-function transform(item) {
-  delete item.type;
+const getNodePath = (nodes, label) => {
+  for (const node of nodes) {
+    if (node.label === label) {
+      return label
+    }
+
+    if (node.children) {
+      const childPath = getNodePath(node.children, label)
+      if (childPath) {
+        return node.label + '/' + childPath
+      }
+    }
+  }
+}
+const transform = (item) => {
   item.label = item.name;
   delete item.name;
-  if (item.contents) {
+  if (item.type === 'directory') {
     item.icon = 'folder';
     item.children = item.contents;
     delete item.contents;
@@ -79,32 +123,11 @@ const imgAdd = (pos, file) => {
       'token': '1fee373d94bf7bf2b87fcbf756b716d2',
       'content-type': 'multipart/form-data'
     }
-  }).then(({ data }) => {
+  }).then(({data}) => {
     const url = data.data.url;
     content.value = content.value.replace(/!\[[^\]]+\]\([^)]+\)/, `![](${url})`);
     imgnum.value++;
   })
-}
-const check = () => {
-  if (content.value.length === 0) Swal.fire('Content is empty', 'info')
-  else if (filename.value == '') Swal.fire('Please input filename', 'info')
-  else submint()
-}
-let submint = () => {
-  if (content.value != '' && title.value != '') {
-    const json = JSON.stringify({
-      content: content.value,
-      filename: title.value,
-      time: new Date().getTime()
-    });
-    axios.post('https://www.codehelp.cn:3000/api/ask', json, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-    Swal.fire('Save success', '', 'success').then(window.location.reload())
-  }
 }
 </script>
 

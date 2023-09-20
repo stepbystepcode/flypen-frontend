@@ -46,7 +46,7 @@ import {useRouter} from "vue-router";
 const router=useRouter();
 const store = useCheckStore();
 // const update = () => {
-//   axios.post('http://192.168.184.81:8081/api/check', {
+//   axios.post('http://127.0.0.1:8081/api/check', {
 //       person: route.params.id
 //     }, config
 //   ).then((res) => {
@@ -55,7 +55,7 @@ const store = useCheckStore();
 // }
 onMounted(() => {
   // setInterval(update, 500);
-  axios.post('http://192.168.184.81:8081/api/info', {
+  axios.post('http://127.0.0.1:8081/api/info', {
       person: route.params.id
     }, config
   ).then((res) => {
@@ -82,7 +82,7 @@ onMounted(() => {
 const sendMessage = async () => {
   try {
     if(!message.value.length) return;
-    await axios.post('http://192.168.184.81:8081/api/chat', {
+    await axios.post('http://127.0.0.1:8081/api/chat', {
         content: message.value,
         receiver: route.params.id
       }, config

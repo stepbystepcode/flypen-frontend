@@ -27,7 +27,7 @@ const username = ref('');
 const password = ref('');
 const signup = () => {
   axios
-    .post('http://192.168.184.81:8081/api/signup', {
+    .post('http://127.0.0.1:8081/api/signup', {
       username: username.value,
       password: password.value,
     })

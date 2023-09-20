@@ -4,16 +4,16 @@ import axios from 'axios'
 const token = localStorage.getItem('token')
 const config = {
   headers: {
-    Authorization: `Bearer ${token}`    
+    Authorization: `Bearer ${token}`
   }
 }
 export const useCheckStore = defineStore('check', ()=>{
   const history = ref({})
 
   const update = () => {
-    axios.post('http://192.168.184.81:8081/api/check', null, config)
+    axios.post('http://127.0.0.1:8081/api/check', null, config)
       .then(res => {
-        history.value = res.data  
+        history.value = res.data
       })
   }
 

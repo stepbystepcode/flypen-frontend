@@ -17,7 +17,7 @@ const sendMessage = async () => {
   const token = localStorage.getItem('token')
 
   try {
-    await axios.post('http://192.168.184.81:8081/api/info', {
+    await axios.post('http://127.0.0.1:8081/api/info', {
       content: message.value,
       receiver: receiver.value
     }, {
