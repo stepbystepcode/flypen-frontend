@@ -49,7 +49,7 @@ const treeObj = ref(null);
 const path = ref('');
 const selectNode = ref(null);
 const selectFolder = ref('');
-const touch=()=>{
+const touch = () => {
   if (selectFolder.value === null) Swal.fire('Please select folder', '', 'warning')
   else {
     Swal.fire({
@@ -62,13 +62,13 @@ const touch=()=>{
       confirmButtonText: 'Create',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
-        commandReq(5, key2path(final.value, selectNode.value.key)+'/'+login,'').then(res => {
+        commandReq(5, key2path(final.value, selectNode.value.key) + '/' + login, '').then(res => {
           if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => window.location.reload())
           else Swal.fire('Fail', '', 'error')
         })
       }
     })
-}
+  }
 
 }
 const addFolder = () => {
@@ -84,7 +84,7 @@ const addFolder = () => {
       confirmButtonText: 'Create',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
-        commandReq(4, key2path(final.value, selectNode.value.key)+'/'+login,'').then(res => {
+        commandReq(4, key2path(final.value, selectNode.value.key) + '/' + login, '').then(res => {
           if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => window.location.reload())
           else Swal.fire('Fail', '', 'error')
         })
@@ -185,13 +185,15 @@ const transform = (item, key) => {
   item.label = item.name
   delete item.name
   if (item.type === 'directory') {
-    item.icon = 'folder'
-    item.key = key
-    item.children = item.contents
-    delete item.contents
-    item.children.forEach((child, index) => {
-      transform(child, key + '-' + index)
-    })
+    item.icon = 'folder';
+    item.key = key;
+    item.children = item.contents;
+    delete item.contents;
+    if (item.children) {
+      item.children.forEach((child, index) => {
+        transform(child, key + '-' + index);
+      })
+    }
   } else {
     item.icon = 'insert_drive_file'
     item.key = key
