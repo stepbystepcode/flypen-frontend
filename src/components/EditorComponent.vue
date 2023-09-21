@@ -12,27 +12,27 @@ onMounted(() => { codeStyle.value = 'github-dark' })
 const externalLink = reactive({
   markdown_css: function () {
     // 这是你的markdown css文件路径
-    return "https://github.elemecdn.com/mavon-editor/dist/markdown/github-markdown.min.css";
+    return "../src/assets/github-markdown.min.css";
   },
   hljs_js: function () {
     // 这是你的hljs文件路径
-    return "https://github.elemecdn.com/mavon-editor/dist/highlightjs/highlight.min.js";
+    return "../src/assets/highlight.min.js";
   },
   hljs_css: function (css) {
     // 这是你的代码高亮配色文件路径
-    return "https://github.elemecdn.com/highlight.js/styles/" + css + ".css";
+    return "../src/assets/" + css + ".css";
   },
   hljs_lang: function (lang) {
     // 这是你的代码高亮语言解析路径
-    return "https://github.elemecdn.com/highlight.js/lib/languages/" + lang + ".min.js";
+    return "../src/assets/" + lang + ".min.js";
   },
   katex_css: function () {
     // 这是你的katex配色方案路径路径
-    return "https://github.elemecdn.com/mavon-editor/dist/katex/katex.min.css";
+    return "../src/assets/katex.min.css";
   },
   katex_js: function () {
     // 这是你的katex.js路径
-    return "https://github.elemecdn.com/mavon-editor/dist/katex/katex.min.js";
+    return "../src/assets/katex.min.js";
   }
 })
 const toolbars = reactive({
