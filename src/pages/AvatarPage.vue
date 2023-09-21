@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="row justify-end q-my-md">
-      <q-btn @click="setAvatar" class="bg-primary text-white">finish</q-btn>
+      <q-btn @click="setAvatar" :disable="!avatar" class="bg-primary text-white">finish</q-btn>
     </div>
   </div>
 </template>
