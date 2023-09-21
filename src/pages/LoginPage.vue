@@ -4,10 +4,18 @@
             <div class="text-h4 q-pt-md">Flypen</div>
             <div class="text-h5">Sign in</div>
             <span>Use your Flypen Account</span>
-            <q-input outlined v-model="username" style="width: 80vw" label="username"></q-input>
-            <q-input outlined v-model="password" type="password" style="width: 80vw" label="password"></q-input>
+            <q-input @keyup.enter="login" outlined v-model="username" style="width: 80vw" label="username"></q-input>
+            <q-input @keyup.enter="login" outlined v-model="password" :type="isPwd ? 'password' : 'text'" style="width: 80vw" label="password">
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
             <div class="row flex-center justify-between" style="width: 95%">
-                <div><a href="/signup" class="text-primary text-bold" style="text-decoration: none">Create account</a></div>
+                <div @click="router.push('/signup')" class="text-primary text-bold">Create account</div>
                 <q-btn @click="login" class="bg-primary text-white text-bold">login</q-btn>
             </div>
         </div>
@@ -17,8 +25,12 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import Swal from 'sweetalert2';
+import {useRouter} from "vue-router";
+const router = useRouter();
 const username = ref('');
 const password = ref('');
+
+const isPwd=ref(true);
 const login = () => {
     axios
         .post('http://8.130.48.157:8081/api/login', {
@@ -30,12 +42,11 @@ const login = () => {
             if (success) {
                 localStorage.setItem('username', res.data.username);
                 localStorage.setItem('token', res.data.token);
-                window.location.href = '/chat';
-            }
-            Swal.fire({
+              Swal.fire({
                 title: res.data.msg,
                 icon: success ? 'success' : 'error',
-            });
+              }).then(() => { router.push('/chat') });
+            }
         })
 };
 </script>

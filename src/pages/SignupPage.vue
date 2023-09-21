@@ -5,12 +5,20 @@
       <div class="text-h5">Create a Flypen Account</div>
       <span>Enter your name</span>
       <q-form>
-        <q-input outlined v-model="username" :rules="[val => !!val || 'Field is required']" style="width: 80vw"
+        <q-input @keyup.enter="signup" outlined v-model="username" :rules="[val => !!val || 'Field is required']" style="width: 80vw"
           label="username"></q-input>
-        <q-input outlined v-model="password" :rules="[val => !!val || 'Field is required']" type="password"
-          style="width: 80vw" label="password"></q-input>
+        <q-input @keyup.enter="signup" outlined v-model="password" :rules="[val => !!val || 'Field is required']" :type="isPwd ? 'password' : 'text'"
+          style="width: 80vw" label="password">
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
         <div class="row flex-center justify-between" style="width: 95%">
-          <div><a href="/login" class="text-primary text-bold" style="text-decoration: none">Go to Login</a></div>
+          <div @click="router.push('/login')" class="text-primary text-bold">Go to Login</div>
           <q-btn @click="signup" class="bg-primary text-white">next</q-btn>
         </div>
       </q-form>
@@ -25,6 +33,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const username = ref('');
 const password = ref('');
+const isPwd=ref(true);
 const signup = () => {
   axios
     .post('http://8.130.48.157:8081/api/signup', {

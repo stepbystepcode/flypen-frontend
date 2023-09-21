@@ -104,17 +104,23 @@ const sendMessage = async () => {
 </script>
 <style scoped lang="scss">
 .tgme_background {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   z-index: -1;
 }
 
 .tgme_background_pattern.default {
   opacity: 0.3;
   background-image: url(/bg.svg);
+}
+.tgme_background_wrap{
+  display: flex;
+  position: absolute;
+  height: 100%;
+  width: 100vw;
 }
 
 .tgme_background_pattern {

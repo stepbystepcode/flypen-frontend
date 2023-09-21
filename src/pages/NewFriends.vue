@@ -2,7 +2,7 @@
   <q-page class="column">
     <div class="row window-width">
       <q-input v-model="search" style="flex:1" class="q-px-md"></q-input>
-      <q-btn @click="request('add')">Request</q-btn>
+      <q-btn @click="request('add')"><q-icon name="search"></q-icon></q-btn>
     </div>
     <div v-if="list">
     <div class="row person items-center" v-for="(person, i) in list"  :key="i">
@@ -38,18 +38,19 @@ const search = ref('');
 const token = localStorage.getItem('token')
 const username = localStorage.getItem('username')
 const request = (atti: string) => {
-  axios.post(`http://127.0.0.1:8081/api/newfriends?username=${search.value}&operation=${atti}`, {}, {
+  axios.post(`http://8.130.48.157:8081/api/newfriends?username=${search.value}&operation=${atti}`, {}, {
       headers: {
         'Authorization': `Bearer ${token}`,
       }
     }
   ).then(res => {
-    console.log(res)
+    console.log(res);
+    Swal.fire(res.data, '', 'success');
   })
 
 }
 const handle = (req: string, atti: string) => {
-  axios.post(`http://127.0.0.1:8081/api/nfmgr?info=${atti}&username=${req}`, {}, {
+  axios.post(`http://8.130.48.157:8081/api/nfmgr?info=${atti}&username=${req}`, {}, {
     headers: {
       'Authorization': `Bearer ${token}`,
     }
@@ -65,7 +66,7 @@ const handle = (req: string, atti: string) => {
 }
 try {
 
-  axios.post('http://127.0.0.1:8081/api/info', {
+  axios.post('http://8.130.48.157:8081/api/info', {
       person: ''
     }, {
       headers: {
