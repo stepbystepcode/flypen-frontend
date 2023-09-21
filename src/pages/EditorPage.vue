@@ -1,26 +1,26 @@
 <template>
   <div>
     <q-btn-group>
-      <q-btn icon="o_file_copy" @click="copy1()" />
-      <q-btn icon="o_drive_file_move" />
-      <q-btn icon="o_delete"/>
-      <q-btn icon="o_create_new_folder" />
-      <q-btn icon="o_note_add" />
+      <q-btn :icon="copyed?'o_content_paste':'o_file_copy'" @click="copyed?paste(1):cpmv(1)"/>
+      <q-btn :icon="moved?'o_content_paste':'o_drive_file_move'" @click="moved?paste(2):cpmv(2)"/>
+      <q-btn icon="o_delete" @click="deleteFile"/>
+      <q-btn icon="o_create_new_folder" @click="addFolder"/>
+      <q-btn icon="o_note_add" @click="touch"/>
     </q-btn-group>
   </div>
   <div class="row">
     <div class="q-pa-md q-gutter-sm">
-      <q-tree v-if="final" ref="treeObj" :nodes="final" node-key="label" style="min-width: 27vw;max-width: 27vw;"
-        selected-color="primary" v-model:selected="filename" @update:selected="select(filename)" default-expand-all />
+      <q-tree v-if="final" ref="treeObj" :nodes="final" node-key="key" style="min-width: 27vw;max-width: 27vw;"
+              selected-color="primary" v-model:selected="key" @update:selected="select(key)" default-expand-all/>
     </div>
     <div class="container">
       <div class="content">
         <div class="box">
           <span>file name</span>
-          <input type="text" class="input" v-model="filename">
+          <input type="text" class="input" v-model="selectFile">
         </div>
         <div class="box">
-          <Editor style="z-index: 50" v-model="content" @imgAdd="imgAdd" />
+          <Editor style="z-index: 50" v-model="content" @imgAdd="imgAdd"/>
           <div class="q-mt-md row justify-end">
             <q-btn class="bg-primary text-white" style="width: 5rem;" @click="save()">Save</q-btn>
           </div>
@@ -30,24 +30,104 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Editor from '../components/EditorComponent.vue'
-import { ref,onMounted } from 'vue';
+import commandReq from "components/commandReq";
+import {ref, onMounted} from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2'
-const copyd = ref(false);
+
+const copyed = ref(false);
+const moved = ref(false);
+const copyfile = ref('');
+const movefile = ref('');
+const selectFile = ref('');
 const raw = ref();
 const final = ref();
-const lastSelect = ref();
-const filename = ref('');
+const key = ref('');
 const treeObj = ref(null);
 const path = ref('');
-onMounted(()=>{
-  command(0,'','');//tree
-})
+const selectNode = ref(null);
+const selectFolder = ref('');
+const touch=()=>{
+  if (selectFolder.value === null) Swal.fire('Please select folder', '', 'warning')
+  else {
+    Swal.fire({
+      title: 'Please input file name',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Create',
+      showLoaderOnConfirm: true,
+      preConfirm: (login) => {
+        commandReq(5, key2path(final.value, selectNode.value.key)+'/'+login,'').then(res => {
+          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => window.location.reload())
+          else Swal.fire('Fail', '', 'error')
+        })
+      }
+    })
+}
+
+}
+const addFolder = () => {
+  if (selectFolder.value === null) Swal.fire('Please select folder', '', 'warning')
+  else {
+    Swal.fire({
+      title: 'Please input folder name',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Create',
+      showLoaderOnConfirm: true,
+      preConfirm: (login) => {
+        commandReq(4, key2path(final.value, selectNode.value.key)+'/'+login,'').then(res => {
+          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => window.location.reload())
+          else Swal.fire('Fail', '', 'error')
+        })
+      }
+    })
+  }
+}
+
+const deleteFile = () => {
+  if (selectFile.value === '') Swal.fire('Please select file or folder', '', 'warning')
+  else {
+    Swal.fire({
+      title: 'Confirm delete?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#1976D2',
+      cancelButtonColor: '#868686',
+      reverseButtons: true,
+      confirmButtonText: 'Delete',
+    }).then((result) => {
+      if (result.isDismissed) return;
+      commandReq(3, key2path(final.value, selectNode.value.key), '')
+      Swal.fire('Success', '', 'success');
+    })
+  }
+}
+
+function generateKey(node, parentKey = '0') {
+  const key = parentKey + '-' + node.children.length
+
+  if (node.children) {
+    node.children.forEach((child, index) => {
+      generateKey(child, key + '-' + index)
+    })
+  } else {
+    node.key = key
+  }
+
+  return node
+}
 
 const save = () => {
-  if (filename.value === '') Swal.fire('Please input filename', '', 'warning')
+  if (selectFile.value === '') Swal.fire('Please input filename', '', 'warning')
   else if (content.value === '') Swal.fire('Content is empty', '', 'warning')
   else {
     Swal.fire({
@@ -76,78 +156,94 @@ const save = () => {
     });
   }
 }
-const command=(com:number,params1,params2)=>{
-  axios.post('http://8.130.48.157:8081/api/file/commands',{
-    command: com.toString(),
-    params: [params1,params2]
-  },{
-    headers:{
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json'
-    }
-  }).then((res)=>{
-    switch (com) {
-      case 0:
-        tree(res.data);
-        break;
-      case 1:
-        copy(res.data);
-        break;
-      case 2:
-        // move(res.data);
-        break;
-      case 3:
-        // delete(res.data);
-        break;
-      case 4:
-        // mkdir(res.data);
-        break;
-      case 5:
-        // touch(res.data);
-        break;
-      case 6:
-        // cat(res.data);
-        break;
-      default:
-        console.log('error');
-        break;
-    }
-    console.log(res)
-  })
-}
-const select = (file) => {
-  if (filename.value == null) return;
-  const node = treeObj.value.getNodeByKey(file);
-  if (node.icon === 'folder') {
-    // 如果是文件夹,选择保持为上一次选择
-    treeObj.value.setExpanded(file, !treeObj.value.isExpanded(file));
-    filename.value = lastSelect.value;
+const select = (key) => {
+  selectNode.value = treeObj.value.getNodeByKey(key);
+  if (selectNode.value.icon === 'folder') {
+    selectFolder.value = key2path(final.value, selectNode.value.key);
+    content.value = '';
   } else {
-    // 如果是文件,更新最后选择
-    lastSelect.value = filename.value;
+    selectFile.value = selectNode.value.label;
+    selectFolder.value = selectFolder.value === selectFile.value ? key2path(final.value, selectNode.value.key) : './';
+    path.value = key2path(final.value, key);
+    commandReq(6, path.value, '').then(res => {
+      content.value = res.data.toString();
+    })
   }
-  path.value = getNodePath(final.value, filename.value).slice(5)
-  axios.post(`http://8.130.48.157:8081/api/file/commands`,{
-    command: '6',
-    params: [path.value,'']
-  },{
-    headers:{
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json'
-    }
-  }).then(res => {
-    content.value = res.data.toString();
-  })
 }
-const tree = (res) =>{
+onMounted(() => {
+  commandReq(0, '', '').then(res => {
+    tree(res.data);
+  })
+})
+const tree = (res) => {
   raw.value = res;
-  transform(raw.value[0]);
+  transform(raw.value[0], 0);
   raw.value.pop();
   final.value = raw.value;
 }
- const copy=(res)=>{
-  is
+const transform = (item, key) => {
+  item.label = item.name
+  delete item.name
+  if (item.type === 'directory') {
+    item.icon = 'folder'
+    item.key = key
+    item.children = item.contents
+    delete item.contents
+    item.children.forEach((child, index) => {
+      transform(child, key + '-' + index)
+    })
+  } else {
+    item.icon = 'insert_drive_file'
+    item.key = key
+  }
+}
 
+function key2path(tree, key) {
+
+  // 将 key 拆分为数组
+  const keyParts = key.split('-')
+
+  // 根据 key 遍历获取节点
+  let node = tree[0]
+  for (let i = 1; i < keyParts.length; i++) {
+    const index = Number(keyParts[i])
+    node = node.children[index]
+  }
+
+  // 收集路径
+  let path = node.label
+  let parent = tree[0]
+  for (let i = 1; i < keyParts.length - 1; i++) {
+    const index = Number(keyParts[i])
+    parent = parent.children[index]
+    path = parent.label + '/' + path
+  }
+
+  // 移除不需要的前缀
+  path = path.replace(/^\/root\//, '')
+
+  return path
+}
+
+
+const cpmv = (n) => {
+  if (n === 1) {
+    copyed.value = true;
+    copyfile.value = key2path(final.value, selectNode.value.key);
+  } else {
+    moved.value = true;
+    movefile.value = key2path(final.value, selectNode.value.key);
+  }
+}
+const paste = (n) => {
+  if (n === 1) {
+    commandReq(1, copyfile.value, selectFolder.value);
+    copyed.value = false;
+  } else {
+    commandReq(2, movefile.value, selectFolder.value);
+    moved.value = false;
+
+  }
 }
 const getNodePath = (nodes, label) => {
   for (const node of nodes) {
@@ -163,20 +259,19 @@ const getNodePath = (nodes, label) => {
     }
   }
 }
-const transform = (item) => {
-  item.label = item.name;
-  delete item.name;
-  if (item.type === 'directory') {
-    item.icon = 'folder';
-    item.children = item.contents;
-    delete item.contents;
-    item.children.forEach(transform);
-  } else item.icon = 'insert_drive_file';
-}
+// const transform = (item) => {
+//   item.label = item.name;
+//   delete item.name;
+//   if (item.type === 'directory') {
+//     item.icon = 'folder';
+//     item.children = item.contents;
+//     delete item.contents;
+//     item.children.forEach(transform);
+//   } else item.icon = 'insert_drive_file';
+// }
 
 
 let content = ref('');
-const imgnum = ref(0);
 const imgAdd = (pos, file) => {
   console.log(file);
   const formData = new FormData()
@@ -189,9 +284,9 @@ const imgAdd = (pos, file) => {
   }).then((res) => {
     const url = `http://8.130.48.157:8081/api/file/get?filename=${res.data}`;
     content.value = content.value.replace(/!\[[^\]]+\]\([^)]+\)/, `![](${url})`);
-    imgnum.value++;
   })
 }
+
 </script>
 
 <style lang="scss" scoped>

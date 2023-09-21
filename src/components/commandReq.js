@@ -1,0 +1,14 @@
+import axios from 'axios'
+
+export default function commandReq(com,params1,params2) {
+  return axios.post('http://8.130.48.157:8081/api/file/commands',{
+      command: com.toString(),
+      params: [params1,params2]
+    },{
+      headers:{
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+}
