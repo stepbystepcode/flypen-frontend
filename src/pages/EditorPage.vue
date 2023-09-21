@@ -2,8 +2,7 @@
   <div class="row no-wrap">
     <div class="q-pa-md q-gutter-sm">
       <q-tree v-if="final" ref="tree" :nodes="final" node-key="label" style="min-width: 27vw;max-width: 27vw;"
-              selected-color="primary" v-model:selected="filename" @update:selected="select(filename)"
-              default-expand-all/>
+        selected-color="primary" v-model:selected="filename" @update:selected="select(filename)" default-expand-all />
     </div>
     <div class="container">
       <div class="content">
@@ -12,7 +11,7 @@
           <input type="text" class="input" v-model="filename">
         </div>
         <div class="box">
-          <Editor style="z-index: 50" v-model="content" @imgAdd="imgAdd"/>
+          <Editor style="z-index: 50" v-model="content" @imgAdd="imgAdd" />
           <div class="q-mt-md row justify-end">
             <q-btn class="bg-primary text-white" style="width: 5rem;" @click="save()">Save</q-btn>
           </div>
@@ -24,7 +23,7 @@
 
 <script setup>
 import Editor from '../components/EditorComponent.vue'
-import {ref} from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 
@@ -35,19 +34,19 @@ const filename = ref('');
 const tree = ref(null);
 const path = ref('');
 const save = () => {
-  if (filename.value === '') Swal.fire('Please input filename', '','warning')
-  else if (content.value === '') Swal.fire('Content is empty', '','warning')
+  if (filename.value === '') Swal.fire('Please input filename', '', 'warning')
+  else if (content.value === '') Swal.fire('Content is empty', '', 'warning')
   else {
     Swal.fire({
       title: 'Confirm save?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor:'#1976D2',
-      cancelButtonColor:'#868686',
-      reverseButtons:true,
+      confirmButtonColor: '#1976D2',
+      cancelButtonColor: '#868686',
+      reverseButtons: true,
       confirmButtonText: 'Save',
     }).then((result) => {
-      if(result.isDismissed) return;
+      if (result.isDismissed) return;
       const json = JSON.stringify({
         content: content.value,
         filename: path.value,
@@ -118,13 +117,13 @@ const imgAdd = (pos, file) => {
   console.log(file);
   const formData = new FormData()
   formData.append('image', file);
-  axios.post('https://www.imgtp.com/api/upload', formData, {
+  axios.post('http://127.0.0.1:8081/api/upload', formData, {
     headers: {
-      'token': '1fee373d94bf7bf2b87fcbf756b716d2',
+      'token': `Bearer ${localStorage.getItem('token')}`,
       'content-type': 'multipart/form-data'
     }
-  }).then(({data}) => {
-    const url = data.data.url;
+  }).then((res) => {
+    const url = `http://127.0.0.1:8081/api/file/get?filename=${res.data}`;
     content.value = content.value.replace(/!\[[^\]]+\]\([^)]+\)/, `![](${url})`);
     imgnum.value++;
   })
