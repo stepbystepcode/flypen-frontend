@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-wrap">
+  <div class="row">
     <div class="q-pa-md q-gutter-sm">
       <q-tree v-if="final" ref="tree" :nodes="final" node-key="label" style="min-width: 27vw;max-width: 27vw;"
         selected-color="primary" v-model:selected="filename" @update:selected="select(filename)" default-expand-all />
