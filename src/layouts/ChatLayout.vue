@@ -5,7 +5,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          {{ route.params.id?route.params.id:'Flypen Chat' }}
+          {{ route.params.id ? route.params.id : 'Flypen Chat' }}
         </q-toolbar-title>
 
         <div>C++ Course Design</div>
@@ -98,7 +98,7 @@ function logout() {
 //   }
 // }
 // const update = () => {
-//   axios.post('http://127.0.0.1:8081/api/check', null, config
+//   axios.post('http://8.130.48.157:8081/api/check', null, config
 //   ).then((res) => {
 //     history.value = res.data
 //   })

@@ -6,9 +6,9 @@
       <span>Enter your name</span>
       <q-form>
         <q-input outlined v-model="username" :rules="[val => !!val || 'Field is required']" style="width: 80vw"
-                 label="username"></q-input>
+          label="username"></q-input>
         <q-input outlined v-model="password" :rules="[val => !!val || 'Field is required']" type="password"
-                 style="width: 80vw" label="password"></q-input>
+          style="width: 80vw" label="password"></q-input>
         <div class="row flex-center justify-between" style="width: 95%">
           <div><a href="/login" class="text-primary text-bold" style="text-decoration: none">Go to Login</a></div>
           <q-btn @click="signup" class="bg-primary text-white">next</q-btn>
@@ -19,27 +19,27 @@
 </template>
 <script setup>
 import axios from 'axios';
-import {ref} from 'vue';
+import { ref } from 'vue';
 import Swal from 'sweetalert2';
-import {useRouter} from 'vue-router';
+import { useRouter } from 'vue-router';
 const router = useRouter();
 const username = ref('');
 const password = ref('');
 const signup = () => {
   axios
-    .post('http://127.0.0.1:8081/api/signup', {
+    .post('http://8.130.48.157:8081/api/signup', {
       username: username.value,
       password: password.value,
     })
     .then((res) => {
       const success = res.data.msg.includes('Success');
-      if (success){
-        localStorage.setItem('token',res.data.token);
+      if (success) {
+        localStorage.setItem('token', res.data.token);
         Swal.fire({
           title: res.data.msg,
           icon: 'success',
-        }).then(()=>{router.push('/avatar')});
-      }else Swal.fire({
+        }).then(() => { router.push('/avatar') });
+      } else Swal.fire({
         title: res.data.msg,
         icon: 'error',
       });

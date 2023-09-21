@@ -52,7 +52,7 @@ const save = () => {
         filename: path.value,
         //time: new Date().getTime()
       });
-      axios.post('http://127.0.0.1:8081/api/file/save', json, {
+      axios.post('http://8.130.48.157:8081/api/file/save', json, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -75,11 +75,11 @@ const select = (file) => {
     lastSelect.value = filename.value;
   }
   path.value = getNodePath(final.value, filename.value).slice(5)
-  axios.post(`http://127.0.0.1:8081/api/file/cat?path=${path.value}`).then(res => {
+  axios.post(`http://8.130.48.157:8081/api/file/cat?path=${path.value}`).then(res => {
     content.value = res.data.toString();
   })
 }
-axios.post('http://127.0.0.1:8081/api/file/tree').then(res => {
+axios.post('http://8.130.48.157:8081/api/file/tree').then(res => {
   raw.value = res.data;
   transform(raw.value[0]);
   raw.value.pop();
@@ -117,13 +117,13 @@ const imgAdd = (pos, file) => {
   console.log(file);
   const formData = new FormData()
   formData.append('image', file);
-  axios.post('http://127.0.0.1:8081/api/upload', formData, {
+  axios.post('http://8.130.48.157:8081/api/upload', formData, {
     headers: {
       'token': `Bearer ${localStorage.getItem('token')}`,
       'content-type': 'multipart/form-data'
     }
   }).then((res) => {
-    const url = `http://127.0.0.1:8081/api/file/get?filename=${res.data}`;
+    const url = `http://8.130.48.157:8081/api/file/get?filename=${res.data}`;
     content.value = content.value.replace(/!\[[^\]]+\]\([^)]+\)/, `![](${url})`);
     imgnum.value++;
   })

@@ -21,16 +21,16 @@ const username = ref('');
 const password = ref('');
 const login = () => {
     axios
-        .post('http://127.0.0.1:8081/api/login', {
+        .post('http://8.130.48.157:8081/api/login', {
             username: username.value,
             password: password.value,
         })
         .then((res) => {
             const success = res.data.msg.includes('Success');
-            if(success) {
-              localStorage.setItem('username', res.data.username);
-              localStorage.setItem('token', res.data.token);
-              window.location.href = '/chat';
+            if (success) {
+                localStorage.setItem('username', res.data.username);
+                localStorage.setItem('token', res.data.token);
+                window.location.href = '/chat';
             }
             Swal.fire({
                 title: res.data.msg,
