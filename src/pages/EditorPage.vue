@@ -63,7 +63,11 @@ const touch=()=>{
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
         commandReq(5, selectFolder.value+login,'').then(res => {
-          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => window.location.reload())
+          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => {
+            commandReq(0, '', '').then(res => {
+              tree(res.data);
+            })
+          })
           else Swal.fire('Fail', '', 'error')
         })
       }
@@ -85,7 +89,12 @@ const addFolder = () => {
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
         commandReq(4, selectFolder.value+login,'').then(res => {
-          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => console.log())
+          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => {
+
+            commandReq(0, '', '').then(res => {
+              tree(res.data);
+            })
+          })
           else Swal.fire('Fail', '', 'error')
         })
       }
@@ -107,7 +116,12 @@ const deleteFile = () => {
     }).then((result) => {
       if (result.isDismissed) return;
       commandReq(3, selectNode.value.path, '')
-      Swal.fire('Success', '', 'success');
+      Swal.fire('Success', '', 'success').then(()=>{
+
+        commandReq(0, '', '').then(res => {
+          tree(res.data);
+        })
+      })
     })
   }
 }
@@ -243,9 +257,17 @@ const paste = (n) => {
   if (n === 1) {
     commandReq(1, copyfile.value, selectFolder.value);
     copyed.value = false;
+
+    commandReq(0, '', '').then(res => {
+      tree(res.data);
+    })
   } else {
     commandReq(2, movefile.value, selectFolder.value);
     moved.value = false;
+
+    commandReq(0, '', '').then(res => {
+      tree(res.data);
+    })
 
   }
 }
