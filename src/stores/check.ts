@@ -9,6 +9,7 @@ const config = {
 }
 export const useCheckStore = defineStore('check', () => {
   const history = ref({})
+  const info = ref({})
 
   const update = () => {
     axios.post('http://8.130.48.157:8081/api/check', null, config)
@@ -19,7 +20,7 @@ export const useCheckStore = defineStore('check', () => {
 
   setInterval(update, 500)
 
-  return { history }
+  return { history,info }
   // state: () => ({
   //   history:{}
   // }),

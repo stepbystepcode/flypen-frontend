@@ -73,6 +73,7 @@ onMounted(() => {
     }
     info.value = res.data[route.params.id];
     yourAvatar.value = info.value.avatar;
+    store.info.value=info.value;
   });
   setTimeout(() => {
     window.scrollTo(0, document.body.scrollHeight)

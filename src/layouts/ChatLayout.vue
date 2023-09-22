@@ -2,16 +2,30 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn v-if="!route.params.id" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn v-else flat dense round icon="arrow_back" aria-label="Menu" @click="router.push('/chat')" />
 
-        <q-toolbar-title>
-          {{ route.params.id ? route.params.id : 'Flypen Chat' }}
+        <q-toolbar-title class="q-py-sm">
+          <div v-if="route.params.id">
+         <q-avatar v-if="store.info.value"><img :src="`/avatar/${store.info.value.avatar}.jpeg`" alt=""></q-avatar>
+         {{ route.params.id }} 
+          </div>
+          <div v-else>
+          Flypen Chat</div>
         </q-toolbar-title>
 
         <div>C++ Course Design</div>
       </q-toolbar>
     </q-header>
-    <q-color v-model="hexa" id="picker" v-show="false" />
+    <q-dialog v-model="pickerShow">
+      <q-card style="width: 80vw">
+    <q-color v-model="hexa" />
+    <div class="row justify-end q-gutter-md q-mt-sm"><q-btn @click="pickerShow=false"> Cancel </q-btn>
+    <q-btn @click="
+    setColor">Confirm</q-btn>
+    </div>
+</q-card>
+</q-dialog>
 
     <q-drawer show-if-above bordered v-model="leftDrawerOpen">
       <div class="bg-primary column">
@@ -63,12 +77,24 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view  v-slot="{ Component }">
+        <transition  
+  enter-active-class="animated fadeInRight"
+  >  
+    <component :is="Component" />  
+  </transition>  
+      </router-view>
     </q-page-container>
   </q-layout>
 </template>
 
-<script setup lang="ts">
+<script setup>
+import { useCheckStore } from 'stores/check';
+const setColor=()=>{
+  document.querySelector(':root').style.setProperty('--q-primary', hexa.value);
+  pickerShow.value=false;
+}
+const store = useCheckStore();
 import { useRoute } from 'vue-router'
 const route = useRoute();
 const hexa=ref('')
@@ -77,21 +103,10 @@ import { useRouter } from 'vue-router';
 import Swal from "sweetalert2";
 const router = useRouter();
 
+const pickerShow=ref(false);
 const settings=()=>{
   toggleLeftDrawer();
-  document.querySelector('#picker').style.display='block'
-  const swalPop=Swal.fire({
-    title: 'Choose a theme color',
-    heightAuto:false,
-    html:'<div style="height: 500px"></div>',
-    customClass: {
-      popup: 'my-custom-class'
-    }
-  }).then(()=>{
-    document.querySelector(':root').style.setProperty('--q-primary', hexa.value);
-    document.querySelector('#picker').style.display='none'
-
-  });
+  pickerShow.value=true;
 }
 const leftDrawerOpen = ref(false);
 const avatar = ref();
@@ -128,22 +143,4 @@ function logout() {
 </script>
 
 <style scoped lang="scss">
-
-#picker{
-  position: fixed;
-top: 50%;
-left: 50%;
-  z-index: 1000000000;
-  height: 492px;
-  transform: translate(-50%, -50%);
-  width: 351px;
-  display: none;
-}
-
-.my-custom-class{
-  height:300px;
-}
-#picker-warp{
-  height:300px;
-}
 </style>

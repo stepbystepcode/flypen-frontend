@@ -1,11 +1,11 @@
 <template>
   <q-page class="column" v-if="list">
-    <div class="row person items-center" v-for="(person, i) in list" :key="i">
-      <div @click="router.push(`/chat/person/${person.username}`)" style="width: 100vw;">
+    <div class="person items-center relative-position" v-for="(person, i) in list" :key="i"  v-ripple.early>
+      <div @click="router.push(`/chat/person/${person.username}`)" v-touch-hold.mouse="handleHold" :style="`width: 100vw;background-color:${selected==person.username?'gainsboro':'none'};`">
         <q-avatar class="q-ma-md"><img :src="`/avatar/${person.avatar}.jpeg`" alt=""></q-avatar>
         <span style="font-size: 1.2em;">{{ person.username }}</span>
-        <q-separator />
       </div>
+        <q-separator />
     </div>
   </q-page>
 </template>
@@ -15,6 +15,15 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
+const selected=ref('');
+const handleHold =({ evt, ...newInfo })=> {
+  if(selected.value==''){
+        selected.value=evt.target.innerText;
+        
+      }else{
+        selected.value='';
+      }
+    }
 const router = useRouter();
 const list = ref();
 const token = localStorage.getItem('token')
