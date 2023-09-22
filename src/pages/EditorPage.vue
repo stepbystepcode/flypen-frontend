@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <q-btn-group>
+  <div class="window-width row">
+    <q-btn-group style="flex:1" class="justify-around">
       <q-btn :icon="copyed?'o_content_paste':'o_file_copy'" @click="copyed?paste(1):cpmv(1)"/>
       <q-btn :icon="moved?'o_content_paste':'o_drive_file_move'" @click="moved?paste(2):cpmv(2)"/>
       <q-btn icon="o_delete" @click="deleteFile"/>
