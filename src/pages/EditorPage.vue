@@ -49,7 +49,7 @@ const treeObj = ref(null);
 const path = ref('');
 const selectNode = ref(null);
 const selectFolder = ref('');
-const touch = () => {
+const touch=()=>{
   if (selectFolder.value === null) Swal.fire('Please select folder', '', 'warning')
   else {
     Swal.fire({
@@ -62,17 +62,17 @@ const touch = () => {
       confirmButtonText: 'Create',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
-        commandReq(5, key2path(final.value, selectNode.value.key) + '/' + login, '').then(res => {
+        commandReq(5, selectFolder.value+login,'').then(res => {
           if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => window.location.reload())
           else Swal.fire('Fail', '', 'error')
         })
       }
     })
-  }
+}
 
 }
 const addFolder = () => {
-  if (selectFolder.value === null) Swal.fire('Please select folder', '', 'warning')
+  if (selectFolder.value === '') Swal.fire('Please select folder', '', 'warning')
   else {
     Swal.fire({
       title: 'Please input folder name',
@@ -84,8 +84,8 @@ const addFolder = () => {
       confirmButtonText: 'Create',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
-        commandReq(4, key2path(final.value, selectNode.value.key) + '/' + login, '').then(res => {
-          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => window.location.reload())
+        commandReq(4, selectFolder.value+login,'').then(res => {
+          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => console.log())
           else Swal.fire('Fail', '', 'error')
         })
       }
@@ -94,7 +94,7 @@ const addFolder = () => {
 }
 
 const deleteFile = () => {
-  if (selectFile.value === '') Swal.fire('Please select file or folder', '', 'warning')
+  if (selectFile.value === ''&&selectFolder.value==='') Swal.fire('Please select file or folder', '', 'warning')
   else {
     Swal.fire({
       title: 'Confirm delete?',
@@ -106,24 +106,10 @@ const deleteFile = () => {
       confirmButtonText: 'Delete',
     }).then((result) => {
       if (result.isDismissed) return;
-      commandReq(3, key2path(final.value, selectNode.value.key), '')
+      commandReq(3, selectNode.value.path, '')
       Swal.fire('Success', '', 'success');
     })
   }
-}
-
-function generateKey(node, parentKey = '0') {
-  const key = parentKey + '-' + node.children.length
-
-  if (node.children) {
-    node.children.forEach((child, index) => {
-      generateKey(child, key + '-' + index)
-    })
-  } else {
-    node.key = key
-  }
-
-  return node
 }
 
 const save = () => {
@@ -142,7 +128,7 @@ const save = () => {
       if (result.isDismissed) return;
       const json = JSON.stringify({
         content: content.value,
-        filename: path.value,
+        filename: selectFolder.value+'/'+selectFile.value,
         //time: new Date().getTime()
       });
       axios.post('http://8.130.48.157:8081/api/file/save', json, {
@@ -159,13 +145,12 @@ const save = () => {
 const select = (key) => {
   selectNode.value = treeObj.value.getNodeByKey(key);
   if (selectNode.value.icon === 'folder') {
-    selectFolder.value = key2path(final.value, selectNode.value.key);
+    selectFolder.value = selectNode.value.path+'/';
     content.value = '';
   } else {
     selectFile.value = selectNode.value.label;
-    selectFolder.value = selectFolder.value === selectFile.value ? key2path(final.value, selectNode.value.key) : './';
-    path.value = key2path(final.value, key);
-    commandReq(6, path.value, '').then(res => {
+    selectFolder.value = selectFolder.value === selectFile.value ? selectNode.value.path+'/' :selectNode.value.path.slice(0, selectNode.value.path.length - selectFile.value.length - 1) ;
+    commandReq(6, selectNode.value.path, '').then(res => {
       content.value = res.data.toString();
     })
   }
@@ -177,64 +162,81 @@ onMounted(() => {
 })
 const tree = (res) => {
   raw.value = res;
-  transform(raw.value[0], 0);
+  transform(raw.value[0], '0','.');
   raw.value.pop();
   final.value = raw.value;
 }
-const transform = (item, key) => {
-  item.label = item.name
-  delete item.name
+const transform = (item, key, path) => {
+  item.label = item.name;
+  delete item.name;
+  item.path = path;
   if (item.type === 'directory') {
     item.icon = 'folder';
     item.key = key;
     item.children = item.contents;
     delete item.contents;
-    if (item.children) {
-      item.children.forEach((child, index) => {
-        transform(child, key + '-' + index);
-      })
-    }
+    if (item.children){
+    item.children.forEach((child, index) => {
+      transform(child, key + '-' + index, path + '/' + child.name);
+    })}
   } else {
     item.icon = 'insert_drive_file'
     item.key = key
   }
 }
-
-function key2path(tree, key) {
-
-  // 将 key 拆分为数组
-  const keyParts = key.split('-')
-
-  // 根据 key 遍历获取节点
-  let node = tree[0]
-  for (let i = 1; i < keyParts.length; i++) {
-    const index = Number(keyParts[i])
-    node = node.children[index]
-  }
-
-  // 收集路径
-  let path = node.label
-  let parent = tree[0]
-  for (let i = 1; i < keyParts.length - 1; i++) {
-    const index = Number(keyParts[i])
-    parent = parent.children[index]
-    path = parent.label + '/' + path
-  }
-
-  // 移除不需要的前缀
-  path = path.replace(/^\/root\//, '')
-
-  return path
-}
+// const transform = (item, key) => {
+//   item.label = item.name
+//   delete item.name
+//   if (item.type === 'directory') {
+//     item.icon = 'folder';
+//     item.key = key;
+//     item.children = item.contents;
+//     delete item.contents;
+//     if (item.children){
+//     item.children.forEach((child, index) => {
+//       transform(child, key + '-' + index);
+//     })}
+//   } else {
+//     item.icon = 'insert_drive_file'
+//     item.key = key
+//   }
+// }
+//
+// function key2path(tree, key) {
+//
+//   // 将 key 拆分为数组
+//   const keyParts = key.split('-')
+//
+//   // 根据 key 遍历获取节点
+//   let node = tree[0]
+//   for (let i = 1; i < keyParts.length; i++) {
+//     const index = Number(keyParts[i])
+//     node = node.children[index]
+//   }
+//
+//   // 收集路径
+//   let path = node.label
+//   let parent = tree[0]
+//   for (let i = 1; i < keyParts.length - 1; i++) {
+//     const index = Number(keyParts[i])
+//     parent = parent.children[index]
+//     path = parent.label + '/' + path
+//   }
+//
+//   // 移除不需要的前缀
+//   path = path.replace(/^\/root\//, '')
+//
+//   return path
+// }
 
 
 const cpmv = (n) => {
   if (n === 1) {
     copyed.value = true;
-    copyfile.value = key2path(final.value, selectNode.value.key);
+    copyfile.value = selectFolder.value+'/'+selectFile.value;
   } else {
     moved.value = true;
-    movefile.value = key2path(final.value, selectNode.value.key);
+    movefile.value = selectFolder.value+'/'+selectFile.value;
   }
 }
 const paste = (n) => {
@@ -247,30 +249,21 @@ const paste = (n) => {
 
   }
 }
-const getNodePath = (nodes, label) => {
-  for (const node of nodes) {
-    if (node.label === label) {
-      return label
-    }
-
-    if (node.children) {
-      const childPath = getNodePath(node.children, label)
-      if (childPath) {
-        return node.label + '/' + childPath
-      }
-    }
-  }
-}
-// const transform = (item) => {
-//   item.label = item.name;
-//   delete item.name;
-//   if (item.type === 'directory') {
-//     item.icon = 'folder';
-//     item.children = item.contents;
-//     delete item.contents;
-//     item.children.forEach(transform);
-//   } else item.icon = 'insert_drive_file';
+// const getNodePath = (nodes, label) => {
+//   for (const node of nodes) {
+//     if (node.label === label) {
+//       return label
+//     }
+//
+//     if (node.children) {
+//       const childPath = getNodePath(node.children, label)
+//       if (childPath) {
+//         return node.label + '/' + childPath
+//       }
+//     }
+//   }
 // }
+
 
 
 let content = ref('');
