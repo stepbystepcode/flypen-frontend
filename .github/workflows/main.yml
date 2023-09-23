@@ -30,6 +30,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: add
+      run: quasar mode add capacitor
+      
     - name: cat
       run: cat ./src-capacitor/capacitor.config.json
 
