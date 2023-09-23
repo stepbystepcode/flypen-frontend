@@ -57,6 +57,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.AAA }}
       with:
+        tag_name: ${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
         draft: false
         prerelease: true
         
