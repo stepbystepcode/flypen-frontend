@@ -167,6 +167,7 @@ module.exports = configure(function (/* ctx */) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor
     capacitor: {
       appName: 'FlyPen',
+      appId: 'com.company.appname',
       hideSplashscreen: true
     },
 
