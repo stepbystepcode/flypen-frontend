@@ -30,6 +30,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: cat
+      run: cat ./src-capacitor/capacitor.config.json
+
     - name: Build APK
       run: echo "org.flypen.app" | quasar build -m capacitor -T android
 
@@ -38,17 +41,6 @@ jobs:
       with:
         github_token: ${{ secrets.AAA }}
         release_branches: main
-
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.AAA }}
-      with:
-        tag_name: test
-        release_name: Release test
-        draft: false
-        prerelease: false
 
     - name: Upload APK
       uses: actions/upload-release-asset@v1
