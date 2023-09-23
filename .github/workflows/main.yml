@@ -22,7 +22,7 @@ jobs:
       run: npm install
 
     - name: Install Quasar CLI
-      run: npm install -g @quasar/cli
+      run: npm install -g @quasar/cli @quasar/icongenie
 
     - name: Set up JDK 17
       uses: actions/setup-java@v2
@@ -30,7 +30,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Add mode
+    - name: Add Mode
       run: echo "org.flypen.app" | quasar mode add capacitor
       
     - name: Http
@@ -38,12 +38,26 @@ jobs:
 
     - name: Build APK
       run: quasar build -m capacitor -T android
+      
+    - name: Add Icon
+      run: icongenie generate -m capacitor -i ./icon.png
 
     - name: Bump version and push tag
       uses: mathieudutour/github-tag-action@v6.1
       with:
         github_token: ${{ secrets.AAA }}
         release_branches: main
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.AAA }}
+      with:
+        tag_name:  ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: true
 
     - name: Upload APK
       uses: actions/upload-release-asset@v1
