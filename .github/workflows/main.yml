@@ -89,7 +89,7 @@ jobs:
         KEYSTORE_PASSWORD: ${{ secrets.PASSWORD }}
         KEY_PASSWORD: ${{ secrets.PASSWORD }}  
       run: |
-        zipalign -v 4 ./dist/capacitor/android/apk/release/app-release-unsigned.apk signed.apk
+        # zipalign -v 4 ./dist/capacitor/android/apk/release/app-release-unsigned.apk signed.apk
         apksigner sign --ks ./my-release-key.keystore --ks-key-alias org.flypen.app ./signed.apk
         
     - name: Upload APK
