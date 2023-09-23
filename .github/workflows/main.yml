@@ -31,13 +31,13 @@ jobs:
         distribution: 'temurin'
 
     - name: add
-      run: quasar mode add capacitor
+      run: echo "org.flypen.app" | quasar mode add capacitor
       
     - name: cat
       run: cat ./src-capacitor/capacitor.config.json
 
     - name: Build APK
-      run: echo "org.flypen.app" | quasar build -m capacitor -T android
+      run: quasar build -m capacitor -T android
 
     - name: Bump version and push tag
       uses: mathieudutour/github-tag-action@v6.1
