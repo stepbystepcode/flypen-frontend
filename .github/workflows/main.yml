@@ -81,7 +81,7 @@ jobs:
       env:
         KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
       run: |
-        zsh -c "echo $KEYSTORE_BASE64 | base64 -d > keystore.jks"
+        zsh -c "echo $KEYSTORE_BASE64 | base64 -d > my-release-key.keystore"
   
     - name: Sign APK
       env:
@@ -89,8 +89,9 @@ jobs:
         KEYSTORE_PASSWORD: ${{ secrets.PASSWORD }}
         KEY_PASSWORD: ${{ secrets.PASSWORD }}  
       run: |
-        jarsigner -keystore keystore.jks -storepass $KEYSTORE_PASSWORD -keypass $KEY_PASSWORD -signedjar ./signed.apk ./dist/capacitor/android/apk/release/app-release-unsigned.apk org.flypen.app    
-      
+        zipalign -v 4 ./dist/capacitor/android/apk/release/app-release-unsigned.apk signed.apk
+        apksigner sign --ks ./my-release-key.keystore --ks-key-alias org.flypen.app ./signed.apk
+        
     - name: Upload APK
       uses: actions/upload-release-asset@v1
       env:
