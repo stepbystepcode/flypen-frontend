@@ -34,7 +34,7 @@ jobs:
       run: echo "org.flypen.app" | quasar mode add capacitor
       
     - name: Http
-      run: jq 'del(.server)' ./capacitor.config.json > ./edit.json && mv ./edit.json ./capacitor.config.json
+      run: jq 'del(.server)' ./src-capacitor/capacitor.config.json > ./src-capacitor/edit.json && mv ./src-capacitor/edit.json ./src-capacitor/capacitor.config.json
 
     - name: Build APK
       run: quasar build -m capacitor -T android
