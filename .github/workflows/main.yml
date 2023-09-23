@@ -36,11 +36,11 @@ jobs:
     - name: Http
       run: jq 'del(.server)' ./src-capacitor/capacitor.config.json > ./src-capacitor/edit.json && mv ./src-capacitor/edit.json ./src-capacitor/capacitor.config.json
 
-    - name: Build APK
-      run: quasar build -m capacitor -T android
-      
     - name: Add Icon
       run: icongenie generate -m capacitor -i ./icon.png
+      
+    - name: Build APK
+      run: quasar build -m capacitor -T android
 
     - name: Bump version and push tag
       uses: mathieudutour/github-tag-action@v6.1
