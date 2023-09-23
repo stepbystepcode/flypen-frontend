@@ -30,11 +30,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: add
+    - name: Add mode
       run: echo "org.flypen.app" | quasar mode add capacitor
       
-    - name: cat
-      run: cat ./src-capacitor/capacitor.config.json
+    - name: Http
+      run: jq 'del(.server)' ./capacitor.config.json > ./edit.json && mv ./edit.json ./capacitor.config.json
 
     - name: Build APK
       run: quasar build -m capacitor -T android
