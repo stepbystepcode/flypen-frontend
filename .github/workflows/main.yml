@@ -89,7 +89,7 @@ jobs:
         KEYSTORE_PASSWORD: ${{ secrets.PASSWORD }}
         KEY_PASSWORD: ${{ secrets.PASSWORD }}  
       run: |
-        jarsigner -keystore keystore.jks -storepass $KEYSTORE_PASSWORD -keypass $KEY_PASSWORD -signedjar signed.apk unsigned.apk $ALIAS    
+        jarsigner -keystore keystore.jks -storepass $KEYSTORE_PASSWORD -keypass $KEY_PASSWORD -signedjar ./signed.apk ./dist/capacitor/android/apk/release/app-release-unsigned.apk org.flypen.app    
       
     - name: Upload APK
       uses: actions/upload-release-asset@v1
@@ -97,6 +97,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.AAA }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./dist/capacitor/android/apk/release/app-release-unsigned.apk
+        asset_path: ./signed.apk
         asset_name: app.apk
         asset_content_type: application/vnd.android.package-archive
