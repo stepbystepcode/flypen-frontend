@@ -22,7 +22,7 @@ jobs:
       run: npm install
 
     - name: Install Quasar CLI
-      run: npm install -g @quasar/cli @quasar/icongenie
+      run: npm install -g @quasar/cli @quasar/icongenie @capacitor/android
 
     - name: Set up JDK 17
       uses: actions/setup-java@v2
