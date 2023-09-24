@@ -30,6 +30,7 @@ This is a cross-platform multi-end application built with Vue 3 and Quasar frame
 - Vue 3
 - Quasar
 - Node.js
+- Pinia
 
 ## Develop from source 
 *node version v18.18.0*
