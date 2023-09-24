@@ -22,7 +22,7 @@ jobs:
       run: npm install
 
     - name: Install Quasar CLI
-      run: npm install -g @quasar/cli @quasar/icongenie @capacitor/android
+      run: npm install -g @quasar/cli @quasar/icongenie
     
     - name: Set up zsh & jdk
       run: |
@@ -47,12 +47,16 @@ jobs:
       run: jq 'del(.server)' ./src-capacitor/capacitor.config.json > ./src-capacitor/edit.json && mv ./src-capacitor/edit.json ./src-capacitor/capacitor.config.json
       
     - name: Build APK
+      env: 
+        JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
       run: quasar build -m capacitor -T android
       
     - name: Add Icon
       run: icongenie generate -m capacitor -i ./icon.png
       
     - name: Build APK with icon
+      env: 
+        JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
       run: quasar build -m capacitor -T android
 
     - name: Bump version and push tag
