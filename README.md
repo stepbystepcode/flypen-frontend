@@ -12,7 +12,6 @@
 
 ## C++ Course Design
 
-Flypen Frontend
 
 This is a cross-platform multi-end application built with Vue 3 and Quasar framework. It supports web, Android, iOS, Windows, Linux and macOS.
 
