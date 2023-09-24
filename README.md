@@ -1,11 +1,11 @@
 <p align="center">
 <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/57084184/270096729-18a461fc-e7ed-4bda-881d-da808878d525.svg"/>
 </p>
-<h2 align="center">Flypen</h2>
+<h2 align="center">Flypen Frontend</h2>
 <p align="center">
   <a href="https://github.com/stepbystepcode/flypen-frontend/actions"><img src="https://github.com/stepbystepcode/flypen-frontend/actions/workflows/main.yml/badge.svg" alt="Build Status"></a>
   <a href="https://raw.githubusercontent.com/stepbystepcode/flypen-frontend/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="LICENSE"></a>
-  <a href="https://github.com/topics/cpp"><img src="https://img.shields.io/badge/language-c++-blue.svg" alt="languange"></a>
+  <a href="https://github.com/topics/cpp"><img src="https://img.shields.io/badge/language-Vue.js-41B883?logo=vue.js" alt="languange"></a>
 </p>
 
 *Read this in other languages: [English](README.md), [简体中文](README.zh_Hans.md).*
