@@ -61,7 +61,7 @@ wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber
 export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
 java -jar uber-apk-signer-1.3.0.jar -a ./dist/capacitor/android/apk/release/app-release-unsigned.apk --out signed
 ```
-you will find ```signed.apk``` file in ```./signed/app-release-aligned-debugSigned.apk```
+you will find apk file in ```./signed/app-release-aligned-debugSigned.apk```
 
 ## Get Started
 ### Download the app
