@@ -109,9 +109,9 @@ module.exports = configure(function (/* ctx */) {
       plugins: []
     },
 
-    animations: 'all', // --- includes all animations
     // https://v2.quasar.dev/options/animations
-    // animations: ["fadeInRight", "fadeOutLeft"],
+    // animations: 'all', // --- includes all animations
+    animations: ["fadeInRight"],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles
     // sourceFiles: {
