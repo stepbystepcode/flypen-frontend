@@ -34,7 +34,7 @@ This is a cross-platform multi-end application built with Vue 3 and Quasar frame
 
 ## Develop from source 
 *node version v18.18.0*
-```bash
+```shell
 git clone https://github.com/stepbystepcode/flypen-frontend.git
 cd flypen-frontend
 npm i
@@ -44,7 +44,7 @@ quasar dev
 
 ## Build apk file from source 
 *node version v18.18.0*
-```bash
+```shell
 git clone https://github.com/stepbystepcode/flypen-frontend.git
 cd flypen-frontend
 npm i
