@@ -41,6 +41,7 @@ jobs:
       env:
         JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
       run: ｜
+        rm -rf /home/runner/work/_temp/
         quasar build -m capacitor -T android
         icongenie generate -m capacitor -i ./icon.png
         quasar build -m capacitor -T android
