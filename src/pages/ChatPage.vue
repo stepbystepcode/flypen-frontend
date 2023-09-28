@@ -28,24 +28,25 @@ import myBg from '../boot/bg.js';
 import { onMounted, ref } from 'vue'
 import axios from 'axios';
 import { useRoute } from 'vue-router'
-
-const myAvatar = localStorage.getItem('avatar');
+import { useCheckStore } from 'stores/check';
+import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
+import {useQuasar} from 'quasar';
+const router = useRouter();
+const store = useCheckStore();
+const myAvatar = store.info.avatar
 const yourAvatar = ref('');
 const route = useRoute();
 const message = ref('');
-const info = ref();
-const token = localStorage.getItem('token')
+const $q = useQuasar()
+const token = $q.localStorage.getItem('token')
 const config = {
   headers: {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application-json'
   }
 }
-import { useCheckStore } from 'stores/check';
-import Swal from "sweetalert2";
-import { useRouter } from "vue-router";
-const router = useRouter();
-const store = useCheckStore();
+
 // const update = () => {
 //   axios.post('http://8.130.48.157:8081/api/check', {
 //       person: route.params.id
@@ -60,8 +61,8 @@ onMounted(() => {
     person: route.params.id
   }, config
   ).then((res) => {
-    const username = localStorage.getItem('username');
-    if (!res.data[username].friends.find(item => item.username === route.params.id)) {
+    const username = store.info.username
+    if (!res.data.message[username].friends.find(item => item.username === route.params.id)) {
       Swal.fire({
         title: 'Oops...',
         text: 'You are not friends with this person!',
@@ -71,9 +72,14 @@ onMounted(() => {
         router.push('/chat')
       });
     }
-    info.value = res.data[route.params.id];
-    yourAvatar.value = info.value.avatar;
-    store.info.value=info.value;
+    console.log(res.data)
+    store.info = {
+      ...store.info,
+      ...res.data.message[route.params.id],
+      friends: store.info.friends
+    };
+    $q.localStorage.set('info', store.info)
+    yourAvatar.value = store.info.avatar;
   });
   setTimeout(() => {
     window.scrollTo(0, document.body.scrollHeight)

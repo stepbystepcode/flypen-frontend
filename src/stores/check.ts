@@ -12,16 +12,11 @@ export const useCheckStore = defineStore('check', () => {
   const info = ref({})
 
   const update = () => {
-    axios.post('http://8.130.48.157:8081/api/check', null, config)
+    axios.post('http://8.130.48.157:8081/api/check?type=new', null, config)
       .then(res => {
-        history.value = res.data
+        //history.value = {...history.value,...res.data.message}
       })
-    if(info.value==={}){
-      // getInfo();
-      console.log('no info');
-    }
   }
-
   setInterval(update, 500)
 
   return { history,info }
