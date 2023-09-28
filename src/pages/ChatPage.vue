@@ -76,10 +76,11 @@ onMounted(() => {
     store.info = {
       ...store.info,
       ...res.data.message[route.params.id],
-      friends: store.info.friends
+      friends: store.info.friends,
+      avatar: store.info.avatar
     };
     $q.localStorage.set('info', store.info)
-    yourAvatar.value = store.info.avatar;
+    yourAvatar.value = store.info.friends.find(item => item.username === route.params.id).avatar
   });
   setTimeout(() => {
     window.scrollTo(0, document.body.scrollHeight)
