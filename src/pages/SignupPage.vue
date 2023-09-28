@@ -8,7 +8,17 @@
         <q-input @keyup.enter="signup" outlined v-model="username" :rules="[val => !!val || 'Field is required']" style="width: 80vw"
           label="username"></q-input>
         <q-input @keyup.enter="signup" outlined v-model="password" :rules="[val => !!val || 'Field is required']" :type="isPwd ? 'password' : 'text'"
-          style="width: 80vw" label="password">
+                 style="width: 80vw" label="password">
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
+        <q-input @keyup.enter="signup" outlined v-model="passwordVer" lazy-rules :rules="[val => val===password || 'Two password not same']" :type="isPwd ? 'password' : 'text'"
+                 style="width: 80vw" label="password">
           <template v-slot:append>
             <q-icon
               :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -33,6 +43,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const username = ref('');
 const password = ref('');
+const passwordVer = ref('');
 const isPwd=ref(true);
 const signup = () => {
   axios

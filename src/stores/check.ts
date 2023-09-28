@@ -16,6 +16,10 @@ export const useCheckStore = defineStore('check', () => {
       .then(res => {
         history.value = res.data
       })
+    if(info.value==={}){
+      // getInfo();
+      console.log('no info');
+    }
   }
 
   setInterval(update, 500)

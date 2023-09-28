@@ -8,6 +8,7 @@
         <q-separator />
     </div>
   </q-page>
+  <div v-else>You dont have any friends...</div>
 </template>
 
 <script setup lang="ts">
@@ -19,7 +20,7 @@ const selected=ref('');
 const handleHold =({ evt, ...newInfo })=> {
   if(selected.value==''){
         selected.value=evt.target.innerText;
-        
+
       }else{
         selected.value='';
       }
@@ -39,7 +40,7 @@ try {
     }
   }
   ).then(res => {
-    if (username) {
+    if (username&&res.data[username]!=null) {
       list.value = res.data[username].friends;
       localStorage.setItem('avatar', res.data[username].avatar);
     }
