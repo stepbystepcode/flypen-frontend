@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue'
 import axios from 'axios'
-const token = localStorage.getItem('token')
+import {useQuasar} from 'quasar';
+const $q = useQuasar()
+const token = $q.localStorage.getItem('token')
 const config = {
   headers: {
     Authorization: `Bearer ${token}`
