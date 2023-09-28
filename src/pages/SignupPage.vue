@@ -48,11 +48,25 @@ const username = ref('');
 const password = ref('');
 const passwordVer = ref('');
 const isPwd = ref(true);
+function validatePassword(password) {
+  return (
+    password.length > 8 &&
+    password !== password.toUpperCase() &&
+    password !== password.toLowerCase() &&
+    /\d/.test(password)
+  );
+}
 const signup = () => {
   if (username.value === '' || password.value === '' || passwordVer.value === '')
     Swal.fire({
       title: 'Please fill out all required fields.',
       icon: 'error',
+    });
+  else if (validatePassword(password.value))
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Password',
+      text: 'Password must contain both uppercase and lowercase letters plus numbers',
     });
   else if (password.value !== passwordVer.value) Swal.fire({
     title: 'Passwords do not match',

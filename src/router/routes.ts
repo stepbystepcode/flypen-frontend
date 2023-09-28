@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/file',
-    component: () => import('layouts/FileLayout.vue'),
+    component: () => import('layouts/ChatLayout.vue'),
     children: [
     { path: '/file/explorer', component: () => import('pages/EditorPage.vue') }]
   },
@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/ChatLayout.vue'),
     children: [{ path: '/', component: () => import('pages/IndexPage.vue') },
     { path: '/signup', component: () => import('pages/SignupPage.vue') },
     { path: '/avatar', component: () => import('pages/AvatarPage.vue') },

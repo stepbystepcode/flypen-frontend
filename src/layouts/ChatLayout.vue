@@ -7,11 +7,11 @@
 
         <q-toolbar-title class="q-py-sm">
           <div v-if="route.params.id">
-         <q-avatar v-if="store.info.value"><img :src="`/avatar/${store.info.value.avatar}.jpeg`" alt=""></q-avatar>
+         <q-avatar v-if="store.info"><img :src="`/avatar/${store.info.friends.find(item => item.username === route.params.id).avatar}.jpeg`" alt=""></q-avatar>
          {{ route.params.id }}
           </div>
           <div v-else>
-          Flypen Chat</div>
+          Flypen</div>
         </q-toolbar-title>
 
         <div>C++ Course Design</div>
@@ -90,21 +90,23 @@
 
 <script setup>
 import { useCheckStore } from 'stores/check';
+
 const setColor=()=>{
   document.querySelector(':root').style.setProperty('--q-primary', hexa.value);
   pickerShow.value=false;
+  store.info.color=hexa.value;
+  $q.localStorage.set('info',store.info);
 }
-const store = useCheckStore();
+
 import { useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 const route = useRoute();
 const hexa=ref('')
 const $q = useQuasar()
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import Swal from "sweetalert2";
+const store = useCheckStore();
 const router = useRouter();
-
 const pickerShow=ref(false);
 const settings=()=>{
   toggleLeftDrawer();
@@ -115,7 +117,7 @@ const avatar = ref();
 setTimeout(() => {
   avatar.value = store.info.avatar;
 }, 500);
-const username = ref(store.info.username || ' ');
+const username = store.info.username;
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
@@ -129,6 +131,9 @@ function logout() {
 if (Object.keys(store.history).length===0){
   store.history=$q.localStorage.getItem('history')
   store.info=$q.localStorage.getItem('info')
+}
+if(store.info.color){
+  document.querySelector(':root').style.setProperty('--q-primary', store.info.color);
 }
 
 </script>

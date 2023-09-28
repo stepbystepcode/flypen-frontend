@@ -77,11 +77,15 @@ const login = () => {
           })
         Swal.fire({
           title: res.data.msg,
-          icon: success ? 'success' : 'error',
+          icon: 'success',
         }).then(() => {
           router.push('/chat')
         });
-      }
+      }else
+        Swal.fire({
+          title: res.data.msg,
+          icon: 'error'
+        })
     })
 };
 </script>
