@@ -79,7 +79,7 @@ onMounted(() => {
       friends: store.info.friends
     };
     $q.localStorage.set('info', store.info)
-    yourAvatar.value = store.info.avatar;
+    yourAvatar.value = store.info.friends[store.info[route.params.id].avatar]
   });
   setTimeout(() => {
     window.scrollTo(0, document.body.scrollHeight)
