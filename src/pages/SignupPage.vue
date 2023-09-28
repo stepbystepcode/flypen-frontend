@@ -1,13 +1,14 @@
 <template>
   <div style="width: 80vw; margin: 0 auto">
     <div class="column flex-center q-gutter-md">
-      <div class="text-h4 q-pt-md">Flypen</div>
+      <img src="/logo.svg" alt="" style="width: 30vw" class="q-pt-md">
+      <div class="text-h4" style="color:#3770c1">Flypen</div>
       <div class="text-h5">Create a Flypen Account</div>
       <span>Enter your name</span>
-      <q-form>
-        <q-input @keyup.enter="signup" outlined v-model="username" :rules="[val => !!val || 'Field is required']" style="width: 80vw"
-          label="username"></q-input>
-        <q-input @keyup.enter="signup" outlined v-model="password" :rules="[val => !!val || 'Field is required']" :type="isPwd ? 'password' : 'text'"
+      <q-form class="q-gutter-y-sm">
+        <q-input @keyup.enter="signup" outlined v-model="username" style="width: 80vw"
+                 label="username"></q-input>
+        <q-input @keyup.enter="signup" outlined v-model="password" :type="isPwd ? 'password' : 'text'"
                  style="width: 80vw" label="password">
           <template v-slot:append>
             <q-icon
@@ -17,7 +18,8 @@
             />
           </template>
         </q-input>
-        <q-input @keyup.enter="signup" outlined v-model="passwordVer" lazy-rules :rules="[val => val===password || 'Two password not same']" :type="isPwd ? 'password' : 'text'"
+        <q-input @keyup.enter="signup" outlined v-model="passwordVer" lazy-rules
+                 :rules="[val => val===password || 'Two password not same']" :type="isPwd ? 'password' : 'text'"
                  style="width: 80vw" label="password">
           <template v-slot:append>
             <q-icon
@@ -37,33 +39,46 @@
 </template>
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import {ref} from 'vue';
 import Swal from 'sweetalert2';
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
+
 const router = useRouter();
 const username = ref('');
 const password = ref('');
 const passwordVer = ref('');
-const isPwd=ref(true);
+const isPwd = ref(true);
 const signup = () => {
-  axios
-    .post('http://8.130.48.157:8081/api/signup', {
-      username: username.value,
-      password: password.value,
-    })
-    .then((res) => {
-      const success = res.data.msg.includes('Success');
-      if (success) {
-        localStorage.setItem('token', res.data.token);
-        Swal.fire({
-          title: res.data.msg,
-          icon: 'success',
-        }).then(() => { router.push('/avatar') });
-      } else Swal.fire({
-        title: res.data.msg,
-        icon: 'error',
-      });
+  if (username.value === '' || password.value === '' || passwordVer.value === '')
+    Swal.fire({
+      title: 'Please fill out all required fields.',
+      icon: 'error',
     });
+  else if (password.value !== passwordVer.value) Swal.fire({
+    title: 'Passwords do not match',
+    icon: 'error',
+  });
+  else
+    axios
+      .post('http://8.130.48.157:8081/api/signup', {
+        username: username.value,
+        password: password.value,
+      })
+      .then((res) => {
+        const success = res.data.code === 200;
+        if (success) {
+          localStorage.setItem('token', res.data.token);
+          Swal.fire({
+            title: res.data.msg,
+            icon: 'success',
+          }).then(() => {
+            router.push('/avatar')
+          });
+        } else Swal.fire({
+          title: res.data.msg,
+          icon: 'error',
+        });
+      });
 };
 </script>
 <style scoped></style>

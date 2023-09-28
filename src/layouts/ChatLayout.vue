@@ -8,7 +8,7 @@
         <q-toolbar-title class="q-py-sm">
           <div v-if="route.params.id">
          <q-avatar v-if="store.info.value"><img :src="`/avatar/${store.info.value.avatar}.jpeg`" alt=""></q-avatar>
-         {{ route.params.id }} 
+         {{ route.params.id }}
           </div>
           <div v-else>
           Flypen Chat</div>
@@ -78,11 +78,11 @@
 
     <q-page-container>
       <router-view  v-slot="{ Component }">
-        <transition  
+        <transition
   enter-active-class="animated fadeInRight"
-  >  
-    <component :is="Component" />  
-  </transition>  
+  >
+    <component :is="Component" />
+  </transition>
       </router-view>
     </q-page-container>
   </q-layout>
@@ -96,8 +96,10 @@ const setColor=()=>{
 }
 const store = useCheckStore();
 import { useRoute } from 'vue-router'
+import { useQuasar } from 'quasar'
 const route = useRoute();
 const hexa=ref('')
+const $q = useQuasar()
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import Swal from "sweetalert2";
@@ -111,34 +113,23 @@ const settings=()=>{
 const leftDrawerOpen = ref(false);
 const avatar = ref();
 setTimeout(() => {
-  avatar.value = localStorage.getItem('avatar')
+  avatar.value = store.info.avatar;
 }, 500);
-const username = ref(localStorage.getItem('username') || ' ');
+const username = ref(store.info.username || ' ');
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
 function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('username');
-  localStorage.removeItem('avatar');
+  $q.localStorage.remove('token');
+  store.info=null;
   router.push('/login')
 }
-// const token = localStorage.getItem('token')
-// const config = {
-//   headers: {
-//     'Authorization': `Bearer ${token}`
-//   }
-// }
-// const update = () => {
-//   axios.post('http://8.130.48.157:8081/api/check', null, config
-//   ).then((res) => {
-//     history.value = res.data
-//   })
-// }
-
-
+if (Object.keys(store.history).length===0){
+  store.history=$q.localStorage.getItem('history')
+  store.info=$q.localStorage.getItem('info')
+}
 
 </script>
 

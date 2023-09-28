@@ -14,9 +14,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
-import axios from 'axios';
-
+import {useCheckStore} from 'stores/check';
+import {useQuasar} from 'quasar';
+const store = useCheckStore();
 const selected=ref('');
+const $q = useQuasar()
 const handleHold =({ evt, ...newInfo })=> {
   if(selected.value==''){
         selected.value=evt.target.innerText;
@@ -27,26 +29,9 @@ const handleHold =({ evt, ...newInfo })=> {
     }
 const router = useRouter();
 const list = ref();
-const token = localStorage.getItem('token')
-const username = localStorage.getItem('username')
-try {
+const token = $q.localStorage.getItem('token')
+const username = store.info.username
+if (username)
+list.value = store.info.friends;
 
-  axios.post('http://8.130.48.157:8081/api/info', {
-    person: ''
-  }, {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application-json'
-    }
-  }
-  ).then(res => {
-    if (username&&res.data[username]!=null) {
-      list.value = res.data[username].friends;
-      localStorage.setItem('avatar', res.data[username].avatar);
-    }
-  })
-
-} catch (error) {
-  console.log(error)
-}
 </script>
