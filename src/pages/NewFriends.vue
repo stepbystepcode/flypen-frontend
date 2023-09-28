@@ -28,7 +28,7 @@
   </q-page>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {ref} from 'vue'
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -37,7 +37,7 @@ const list = ref();
 const search = ref('');
 const token = localStorage.getItem('token')
 const username = localStorage.getItem('username')
-const request = (atti: string) => {
+const request = (atti) => {
   axios.post(`http://8.130.48.157:8081/api/newfriends?username=${search.value}&operation=${atti}`, {}, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -49,7 +49,7 @@ const request = (atti: string) => {
   })
 
 }
-const handle = (req: string, atti: string) => {
+const handle = (req, atti) => {
   axios.post(`http://8.130.48.157:8081/api/nfmgr?info=${atti}&username=${req}`, {}, {
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -59,7 +59,7 @@ const handle = (req: string, atti: string) => {
       title: 'Success',
       icon: 'success',
     });
-    list.value = list.value.filter((item: any) => item.username !== req);
+    list.value = list.value.filter((item) => item.username !== req);
     console.log(res)
   })
 

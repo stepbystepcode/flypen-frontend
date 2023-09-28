@@ -32,7 +32,7 @@
 
 <script setup>
 import Editor from '../components/EditorComponent.vue'
-import commandReq from "components/commandReq";
+import commandReq from 'components/commandReq';
 import {ref, onMounted} from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2'
@@ -46,7 +46,6 @@ const raw = ref();
 const final = ref();
 const key = ref('');
 const treeObj = ref(null);
-const path = ref('');
 const selectNode = ref(null);
 const selectFolder = ref('');
 const touch=()=>{

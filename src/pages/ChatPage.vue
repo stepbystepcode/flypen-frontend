@@ -29,8 +29,8 @@ import { onMounted, ref } from 'vue'
 import axios from 'axios';
 import { useRoute } from 'vue-router'
 import { useCheckStore } from 'stores/check';
-import Swal from "sweetalert2";
-import { useRouter } from "vue-router";
+import Swal from 'sweetalert2';
+import { useRouter } from 'vue-router';
 import {useQuasar} from 'quasar';
 const router = useRouter();
 const store = useCheckStore();
