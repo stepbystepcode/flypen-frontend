@@ -4,7 +4,7 @@
       <div class="row items-center" @click="router.push(`/chat/person/${person.username}`)" v-touch-hold.mouse="handleHold" :style="`width: 100vw;background-color:${selected==person.username?'gainsboro':'none'};`">
         <q-avatar class="q-ma-md"><img :src="`/avatar/${person.avatar}.jpeg`" alt=""></q-avatar>
         <div class="column" style="flex:1">
-        <div class="row justify-between" style="flex:1"><span style="font-size: 1.2em;" class="q-mb-sm">{{ person.username }}</span><span class="text-grey q-mr-md" v-if="store.history[person.username]" >{{store.history[person.username].at(-1).time}}</span></div>
+        <div class="row justify-between" style="flex:1"><span style="font-size: 1.2em;" class="q-mb-sm">{{ person.username }}</span><span class="text-grey q-mr-md" v-if="store.history[person.username]" >{{time(store.history[person.username].at(-1).time)}}</span></div>
         <span v-if="store.history[person.username]" style="color:#808080">{{ store.history[person.username].at(-1).content }}</span>
         </div>
       </div>
@@ -27,12 +27,22 @@ const handleHold =({ evt })=> {
         selected.value='';
       }
     }
+    const time = (time) => {
+      const inputDate = new Date(time);
+      const today = new Date();
+      if(inputDate.getFullYear() === today.getFullYear() && inputDate.getMonth() === today.getMonth() && inputDate.getDate() === today.getDate()) {
+        return time.slice(11, 16)
+      } else {
+        return time
+      }
+    }
 const router = useRouter();
 const list = ref();
 list.value = store.info.friends.sort((a, b) => {
-  const timeA = store.history[a.username]?.time
-  const timeB = store.history[b.username]?.time
-  return new Date(timeA) - new Date(timeB)
+  const timeA = store.order?.[a.username];
+  const timeB = store.order?.[b.username];
+  if(!timeA) return 1
+  if(!timeB) return -1
+  return new Date(timeB) - new Date(timeA)
   });
-
 </script>

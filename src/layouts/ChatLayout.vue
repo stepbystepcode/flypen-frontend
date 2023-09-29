@@ -28,12 +28,12 @@
 </q-dialog>
 
     <q-drawer show-if-above bordered v-model="leftDrawerOpen">
-      <div class="bg-primary column">
+      <div class="bg-primary column" v-if="store.info">
         <div class="q-pa-lg">
-          <q-avatar @click="router.push('/avatar')" v-if="username && avatar" size="60px"><img
-              :src="`/avatar/${avatar}.jpeg`" alt=""></q-avatar>
+          <q-avatar @click="router.push('/avatar')" v-if="store.info" size="60px"><img
+              :src="`/avatar/${store.info.avatar}.jpeg`" alt=""></q-avatar>
         </div>
-        <div class="q-px-lg text-white text-h6 q-pb-md">{{ username }}</div>
+        <div class="q-px-lg text-white text-h6 q-pb-md">{{ store.info.username }}</div>
       </div>
       <div class="column">
         <q-item clickable v-ripple>
@@ -113,12 +113,6 @@ const settings=()=>{
   pickerShow.value=true;
 }
 const leftDrawerOpen = ref(false);
-const avatar = ref();
-setTimeout(() => {
-  avatar.value = store.info.avatar;
-}, 500);
-const username = store.info.username;
-
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
@@ -126,15 +120,22 @@ function toggleLeftDrawer() {
 function logout() {
   $q.localStorage.remove('token');
   store.info=null;
+  store.history=null;
+  store.order=null;
   router.push('/login')
 }
-if (Object.keys(store.history).length===0){
+//if (Object.keys(store.history).length===0){
   store.history=$q.localStorage.getItem('history')
   store.info=$q.localStorage.getItem('info')
-}
+  store.order=$q.localStorage.getItem('order')
+console.log(store.order)
+//}
+try{
 if(store.info.color){
   document.querySelector(':root').style.setProperty('--q-primary', store.info.color);
 }
+}catch(e){}
+
 
 </script>
 
