@@ -2,20 +2,21 @@
   <q-page class="column">
     <div class="tgme_background_wrap">
       <canvas id="tgme_background" class="tgme_background default" width="50" height="50"
-        data-colors="9fb0ea,bbead5,b0cdeb,b2e3dd"></canvas>
+              data-colors="9fb0ea,bbead5,b0cdeb,b2e3dd"></canvas>
       <div style="background-image: url('/bg.svg')" class="tgme_background_pattern default"></div>
     </div>
     <!--    <div v-if="store" id="content" style="flex:1;background: url(/bg.svg)"-->
     <!--         class="q-pa-md q-mb-xl">-->
     <div class=" q-pa-md q-mb-xl">
       <q-chat-message v-for="(item, i) in store.history[route.params.id]" :key="i"
-        :avatar="`/avatar/${item.sender == route.params.id ? yourAvatar : myAvatar}.jpeg`"
-        :bg-color="`${item.sender == route.params.id ? 'white' : 'info'}`" :text="[item.content]" :stamp="item.time"
-        :sent="item.sender != route.params.id" />
+                      :avatar="`/avatar/${item.sender == route.params.id ? yourAvatar : myAvatar}.jpeg`"
+                      :bg-color="`${item.sender == route.params.id ? 'white' : 'info'}`" :text="[item.content]"
+                      :stamp="item.time"
+                      :sent="item.sender != route.params.id"/>
     </div>
     <div class="row fixed bg-white window-width" style="bottom:0">
       <q-input borderless v-model="message" placeholder="Message" style="flex:1" class="q-px-md"
-        @keyup.enter="sendMessage()"></q-input>
+               @keyup.enter="sendMessage()"></q-input>
       <q-btn @click="sendMessage()" flat :disable="!message.length">
         <q-icon color="primary" name="send"></q-icon>
       </q-btn>
@@ -25,13 +26,14 @@
 
 <script setup lang="ts">
 import myBg from '../boot/bg.js';
-import { onMounted, ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import axios from 'axios';
-import { useRoute } from 'vue-router'
-import { useCheckStore } from 'stores/check';
+import {useRoute} from 'vue-router'
+import {useCheckStore} from 'stores/check';
 import Swal from 'sweetalert2';
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 import {useQuasar} from 'quasar';
+
 const router = useRouter();
 const store = useCheckStore();
 const myAvatar = store.info.avatar
@@ -58,8 +60,8 @@ const config = {
 onMounted(() => {
   // setInterval(update, 500);
   axios.post('http://8.130.48.157:8081/api/info', {
-    person: route.params.id
-  }, config
+      person: route.params.id
+    }, config
   ).then((res) => {
     const username = store.info.username
     if (!res.data.message[username].friends.find(item => item.username === route.params.id)) {
@@ -72,7 +74,6 @@ onMounted(() => {
         router.push('/chat')
       });
     }
-    console.log(res.data)
     store.info = {
       ...store.info,
       ...res.data.message[route.params.id],
@@ -92,9 +93,9 @@ const sendMessage = async () => {
   try {
     if (!message.value.length) return;
     await axios.post('http://8.130.48.157:8081/api/chat', {
-      content: message.value,
-      receiver: route.params.id
-    }, config
+        content: message.value,
+        receiver: route.params.id
+      }, config
     );
     message.value = '';
     setTimeout(() => {
@@ -124,7 +125,8 @@ const sendMessage = async () => {
   opacity: 0.3;
   background-image: url(/bg.svg);
 }
-.tgme_background_wrap{
+
+.tgme_background_wrap {
   display: flex;
   position: absolute;
   height: 100%;
