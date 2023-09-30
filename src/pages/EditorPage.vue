@@ -36,7 +36,8 @@ import commandReq from 'components/commandReq';
 import {ref, onMounted} from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2'
-
+import {useQuasar} from 'quasar';
+const $q = useQuasar();
 const copyed = ref(false);
 const moved = ref(false);
 const copyfile = ref('');
@@ -147,7 +148,7 @@ const save = () => {
       axios.post('http://8.130.48.157:8081/api/file/save', json, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${$q.localStorage.getItem('token')}`
         }
       }).then(() => {
         Swal.fire('Save success', '', 'success').then(() => window.location.reload())
@@ -294,7 +295,7 @@ const imgAdd = (pos, file) => {
   formData.append('image', file);
   axios.post('http://8.130.48.157:8081/api/upload', formData, {
     headers: {
-      'token': `Bearer ${localStorage.getItem('token')}`,
+      'Authorization': `Bearer ${$q.localStorage.getItem('token')}`,
       'content-type': 'multipart/form-data'
     }
   }).then((res) => {
