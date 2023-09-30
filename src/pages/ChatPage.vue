@@ -92,6 +92,14 @@ onMounted(() => {
 const sendMessage = async () => {
   try {
     if (!message.value.length) return;
+    if (message.value.length>100) {
+      $q.notify({
+        message: 'Message too long!',
+        color: 'negative',
+        position: 'top'
+      })
+      return
+    }
     await axios.post('http://8.130.48.157:8081/api/chat', {
         content: message.value,
         receiver: route.params.id
