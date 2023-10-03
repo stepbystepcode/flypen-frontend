@@ -31,7 +31,7 @@ jobs:
         
     - name: Build Windows Package
       run: |
-        sed -i '/packager:/a \ \ platform: win32' quasar.config.js
+        sed -i "/packager:/a \ \ platform: 'win32'" quasar.config.js
         quasar build -m electron  
         tar -zcvf Linux-x86_64.tar.gz ./dist/electron/*
 
