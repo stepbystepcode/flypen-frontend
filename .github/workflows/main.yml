@@ -36,6 +36,22 @@ jobs:
         quasar build -m electron  
         tar -zcvf Linux-x86_64.tar.gz ./dist/electron/*
 
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.AAA }}
+      with:
+        tag_name: ${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
+        draft: false
+        prerelease: true
+
+    - name: Let me see
+      run: |
+        sudo apt install -y neofetch
+        neofetch
+      
     - name: Upload Win32
       uses: actions/upload-release-asset@v1
       env:
@@ -87,17 +103,6 @@ jobs:
       with:
         github_token: ${{ secrets.AAA }}
         release_branches: main
-
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.AAA }}
-      with:
-        tag_name: ${{ github.run_number }}
-        release_name: Release ${{ github.run_number }}
-        draft: false
-        prerelease: true
 
     - name: Sign APK
       env:
