@@ -24,22 +24,6 @@ jobs:
     - name: Install Quasar CLI
       run: npm install -g @quasar/cli @quasar/icongenie
 
-    - name: Build Linux Package
-      run: |
-        quasar build -m electron
-        cd dist/electron
-        tar -zcvf Linux-x86_64.tar.gz Packaged
-        cd -
-        
-    - name: Build Windows Package
-      run: |
-        sed -i "/packager:/a \ \ platform: 'win32'" quasar.config.js
-        sudo apt install -y wine64
-        quasar build -m electron
-        cd dist/electron
-        zip -r  Windows-x86_64.zip Packaged
-        cd -
-
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -50,6 +34,32 @@ jobs:
         release_name: Release ${{ github.run_number }}
         draft: false
         prerelease: true
+        
+    - name: Build Linux Package
+      run: |
+        quasar build -m electron
+        cd dist/electron
+        tar -zcvf Linux-x86_64.tar.gz Packaged
+        cd -
+    
+    - name: Upload Linux
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.AAA }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/electron/Linux-x86_64.tar.gz
+        asset_name: Linux-x86_64.tar.gz
+        asset_content_type: application/gzip
+        
+    - name: Build Windows Package
+      run: |
+        sed -i "/packager:/a \ \ platform: 'win32'" quasar.config.js
+        sudo apt install -y wine64
+        quasar build -m electron
+        cd dist/electron
+        zip -r  Windows-x86_64.zip Packaged
+        cd -
       
     - name: Upload Win32
       uses: actions/upload-release-asset@v1
@@ -60,16 +70,6 @@ jobs:
         asset_path: ./dist/electron/Windows-x86_64.zip
         asset_name: Windows-x86_64.zip
         asset_content_type: application/application/zip
-
-    - name: Upload Linux
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.AAA }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/electron/Linux-x86_64.tar.gz
-        asset_name: Linux-x86_64.tar.gz
-        asset_content_type: application/gzip
         
     - name: Set up jdk
       run: |
