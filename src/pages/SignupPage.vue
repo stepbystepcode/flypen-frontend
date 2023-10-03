@@ -1,7 +1,7 @@
 <template>
   <div style="width: 80vw; margin: 0 auto">
     <div class="column flex-center q-gutter-md">
-      <img src="/logo.svg" alt="" style="width: 30vw" class="q-pt-md">
+      <img src="https://img1.imgtp.com/2023/10/03/o67coRDY.svg" alt="" style="width: 30vw" class="q-pt-md">
       <div class="text-h4" style="color:#3770c1">Flypen</div>
       <div class="text-h5">Create a Flypen Account</div>
       <span>Enter your name</span>

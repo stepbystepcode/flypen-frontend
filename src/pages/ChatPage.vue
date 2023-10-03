@@ -3,13 +3,13 @@
     <div class="tgme_background_wrap">
       <canvas id="tgme_background" class="tgme_background default" width="50" height="50"
               data-colors="9fb0ea,bbead5,b0cdeb,b2e3dd"></canvas>
-      <div style="background-image: url('/bg.svg')" class="tgme_background_pattern default"></div>
+      <div style="background-image: url('https://img1.imgtp.com/2023/10/03/3j6Atqox.svg')" class="tgme_background_pattern default"></div>
     </div>
     <!--    <div v-if="store" id="content" style="flex:1;background: url(/bg.svg)"-->
     <!--         class="q-pa-md q-mb-xl">-->
     <div class=" q-pa-md q-mb-xl">
       <q-chat-message v-for="(item, i) in store.history[route.params.id]" :key="i"
-                      :avatar="`/avatar/${item.sender == route.params.id ? yourAvatar : myAvatar}.jpeg`"
+                      :avatar="store.avatar(<number>item.sender == route.params.id ? yourAvatar : myAvatar)"
                       :bg-color="`${item.sender == route.params.id ? 'white' : 'info'}`" :text="[item.content]"
                       :stamp="item.time"
                       :sent="item.sender != route.params.id"/>
