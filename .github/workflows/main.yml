@@ -57,7 +57,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.AAA }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Windows-x86_64.zip
+        asset_path: ./dist/electron/Windows-x86_64.zip
         asset_name: Windows-x86_64.zip
         asset_content_type: application/application/zip
 
@@ -67,7 +67,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.AAA }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Linux-x86_64.tar.gz
+        asset_path: ./dist/electron/Linux-x86_64.tar.gz
         asset_name: Linux-x86_64.tar.gz
         asset_content_type: application/gzip
         
