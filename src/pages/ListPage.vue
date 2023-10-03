@@ -4,7 +4,7 @@
       <div class="row items-center" @click="router.push(`/chat/person/${person.username}`)"
            v-touch-hold.mouse="handleHold"
            :style="`width: 100vw;background-color:${selected===person.username?'gainsboro':'none'};`">
-        <q-avatar class="q-ma-md"><img :src="`/avatar/${person.avatar}.jpeg`" alt=""></q-avatar>
+        <q-avatar class="q-ma-md"><img :src="store.avatar(person.avatar)" alt=""></q-avatar>
         <div class="column" style="flex:1">
           <div class="row justify-between" style="flex:1"><span style="font-size: 1.2em;"
                                                                 class="q-mb-sm">{{ person.username }}</span><span

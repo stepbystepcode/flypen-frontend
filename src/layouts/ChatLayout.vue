@@ -8,7 +8,7 @@
         <q-toolbar-title class="q-py-sm">
           <div v-if="route.params.id">
             <q-avatar v-if="store.info&&route.path!=='/chat'"><img
-              :src="`/avatar/${store.info.friends.find(item => item.username === route.params.id).avatar}.jpeg`" alt="">
+              :src="store.avatar(store.info.friends.find(item => item.username === route.params.id).avatar)" alt="">
             </q-avatar>
             {{ route.params.id }}
           </div>
@@ -36,7 +36,7 @@
       <div class="bg-primary column" v-if="store.info">
         <div class="q-pa-lg">
           <q-avatar @click="router.push('/avatar')" v-if="store.info" size="60px"><img
-            :src="`/avatar/${store.info.avatar}.jpeg`" alt=""></q-avatar>
+            :src="store.avatar(store.info.avatar)" alt=""></q-avatar>
         </div>
         <div class="q-px-lg text-white text-h6 q-pb-md">{{ store.info.username }}</div>
       </div>
