@@ -32,6 +32,7 @@ jobs:
     - name: Build Windows Package
       run: |
         sed -i "/packager:/a \ \ platform: 'win32'" quasar.config.js
+        sudo apt install -y wine64
         quasar build -m electron  
         tar -zcvf Linux-x86_64.tar.gz ./dist/electron/*
 
@@ -55,10 +56,10 @@ jobs:
         asset_name: Linux-x86_64.tar.gz
         asset_content_type: application/gzip
         
-    - name: Set up zsh & jdk
+    - name: Set up jdk
       run: |
         sudo apt-get update
-        sudo apt-get install -y zsh openjdk-8-jdk openjdk-17-jdk
+        sudo apt-get install -y openjdk-8-jdk openjdk-17-jdk
 
     - name: Setup Android SDK Tools
       uses: android-actions/setup-android@v2.0.2
