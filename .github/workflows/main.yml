@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Release
 
 on:
   push:
@@ -38,8 +38,8 @@ jobs:
     - name: Build Linux Package
       run: |
         quasar build -m electron
-        cd dist/electron
-        tar -zcvf Linux-x86_64.tar.gz Packaged
+        cd dist/electron/Packaged
+        tar -zcvf Linux-x86_64.tar.gz Flypen-linux-x64
         cd -
     
     - name: Upload Linux
@@ -57,8 +57,8 @@ jobs:
         sed -i "/packager:/a \ \ platform: 'win32'" quasar.config.js
         sudo apt install -y wine64
         quasar build -m electron
-        cd dist/electron
-        zip -r  Windows-x86_64.zip Packaged
+        cd dist/electron/Packaged
+        zip -r  Windows-x86_64.zip Flypen-win32-x64
         cd -
       
     - name: Upload Win32
