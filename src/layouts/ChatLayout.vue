@@ -32,7 +32,7 @@
       </q-card>
     </q-dialog>
 
-    <q-drawer show-if-above bordered v-model="leftDrawerOpen">
+    <q-drawer bordered v-model="leftDrawerOpen">
       <div class="bg-primary column" v-if="store.info">
         <div class="q-pa-lg">
           <q-avatar @click="router.push('/avatar')" v-if="store.info" size="60px"><img
@@ -81,7 +81,11 @@
 
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container style="display: flex">
+      <q-page-container :class="{'is-mobile':store.isMobile,half:!store.isMobile}" class="no-padding" style="background: #fff">
+        <router-view name="fakeSidebar"></router-view>
+    </q-page-container>
+      <q-page-container style="flex:1" :class="{half:!store.isMobile}" class="no-padding">
       <router-view v-slot="{ Component }">
         <transition
           enter-active-class="animated fadeInRight"
@@ -90,6 +94,7 @@
         </transition>
       </router-view>
     </q-page-container>
+    </q-page-container>
   </q-layout>
 </template>
 
@@ -97,16 +102,22 @@
 import {useCheckStore} from 'stores/check';
 
 const $q = useQuasar()
+watch(
+  () => $q.screen.width,
+  (newWidth) => {
+    store.isMobile = newWidth < 400
+  }
+)
 const setColor = () => {
   document.querySelector(':root').style.setProperty('--q-primary', hexa.value);
   pickerShow.value = false;
   store.info.color = hexa.value;
   $q.localStorage.set('info', store.info);
 }
-
+console.log($q.screen)
 import {useRoute} from 'vue-router'
 import {useQuasar} from 'quasar'
-import {ref} from 'vue';
+import {ref, watch} from 'vue';
 import {useRouter} from 'vue-router';
 
 const route = useRoute();
@@ -119,6 +130,12 @@ const settings = () => {
   pickerShow.value = true;
 }
 const leftDrawerOpen = ref(false);
+
+watch(route, (newRoute) => {
+  if (newRoute.path.includes('person')) {
+    leftDrawerOpen.value = false
+  }
+})
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
@@ -150,4 +167,12 @@ try {
 </script>
 
 <style scoped lang="scss">
+.is-mobile{
+  display: none;
+}
+.half{
+  max-width: 50vw;
+  overflow: hidden;
+}
+
 </style>

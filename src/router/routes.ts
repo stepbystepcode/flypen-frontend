@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from 'vue-router';
-
+import ListPage from 'pages/ListPage.vue';
+import ChatPage from 'pages/ChatPage.vue';
 const routes: RouteRecordRaw[] = [
   {
     path: '/file',
@@ -11,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     path: '/chat',
     component: () => import('layouts/ChatLayout.vue'),
     children: [{ path: '/chat', component: () => import('pages/ListPage.vue') },
-    { path: '/chat/person/:id', component: () => import('pages/ChatPage.vue') },
+    { path: '/chat/person/:id', components: {fakeSidebar:ListPage,default:ChatPage} },
     { path: '/chat/newfriends', component: () => import('pages/NewFriends.vue') }]
   },
   {

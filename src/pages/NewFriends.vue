@@ -48,7 +48,7 @@ const request = (atti) => {
     }
   ).then(res => {
     console.log(res);
-    Swal.fire(res.data, '', 'success');
+    Swal.fire(res.data.message, '', res.data.code===200?'success':'error');
   })
 
 }
@@ -59,11 +59,10 @@ const handle = (req, atti) => {
     }
   }).then(res => {
     Swal.fire({
-      title: 'Success',
-      icon: 'success',
+      title: res.data.message,
+      icon: res.data.code===200?'success':'error',
     });
     list.value = list.value.filter((item) => item.username !== req);
-    console.log(res)
   })
 
 }
@@ -75,7 +74,6 @@ const handle = (req, atti) => {
       }
     }
   ).then((res) => {
-    console.log(res.data.message)
       list.value = res.data.message[username].req;
   })
 
