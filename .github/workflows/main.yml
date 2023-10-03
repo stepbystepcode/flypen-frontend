@@ -27,14 +27,18 @@ jobs:
     - name: Build Linux Package
       run: |
         quasar build -m electron
-        zip -r  Windows-x86_64.zip ./dist/electron/*
+        cd dist/electron
+        tar -zcvf Linux-x86_64.tar.gz Packaged
+        cd -
         
     - name: Build Windows Package
       run: |
         sed -i "/packager:/a \ \ platform: 'win32'" quasar.config.js
         sudo apt install -y wine64
-        quasar build -m electron  
-        tar -zcvf Linux-x86_64.tar.gz ./dist/electron/*
+        quasar build -m electron
+        cd dist/electron
+        zip -r  Windows-x86_64.zip Packaged
+        cd -
 
     - name: Create Release
       id: create_release
