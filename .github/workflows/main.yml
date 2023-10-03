@@ -74,6 +74,37 @@ jobs:
         wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
         java -jar uber-apk-signer-1.3.0.jar -a ./dist/capacitor/android/apk/release/app-release-unsigned.apk --out signed
 
+    - name: Build Linux Package
+      run: |
+        quasar build -m electron
+        zip -r  Windows-x86_64.zip /dist/electron/*
+    - name: Build Windows Package
+      run: |
+        sed -i '/packager:/a \ \ platform: win32' quasar.config.js
+        quasar build -m electron  
+        tar -zcvf Linux-x86_64.tar.gz /dist/electron/*
+
+
+    - name: Upload Win32
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.AAA }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/
+        asset_name: Windows-x86_64.zip
+        asset_content_type: application/application/zip
+
+    - name: Upload Linux
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.AAA }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/
+        asset_name: Linux-x86_64.tar.gz
+        asset_content_type: application/gzip
+    
     - name: Upload APK
       uses: actions/upload-release-asset@v1
       env:
