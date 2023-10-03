@@ -46,11 +46,6 @@ jobs:
         release_name: Release ${{ github.run_number }}
         draft: false
         prerelease: true
-
-    - name: Let me see
-      run: |
-        sudo apt install -y neofetch
-        neofetch
       
     - name: Upload Win32
       uses: actions/upload-release-asset@v1
@@ -58,7 +53,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.AAA }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/
+        asset_path: ./Windows-x86_64.zip
         asset_name: Windows-x86_64.zip
         asset_content_type: application/application/zip
 
@@ -68,7 +63,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.AAA }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/
+        asset_path: ./Linux-x86_64.tar.gz
         asset_name: Linux-x86_64.tar.gz
         asset_content_type: application/gzip
         
