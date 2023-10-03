@@ -9,12 +9,12 @@
     <!--         class="q-pa-md q-mb-xl">-->
     <div class=" q-pa-md q-mb-xl">
       <q-chat-message v-for="(item, i) in store.history[route.params.id]" :key="i"
-                      :avatar="store.avatar(<number>item.sender == route.params.id ? yourAvatar : myAvatar)"
+                      :avatar="store.avatar(item.sender === route.params.id ? yourAvatar : myAvatar)"
                       :bg-color="`${item.sender == route.params.id ? 'white' : 'info'}`" :text="[item.content]"
                       :stamp="item.time"
                       :sent="item.sender != route.params.id"/>
     </div>
-    <div class="row fixed bg-white window-width" style="bottom:0">
+    <div class="row fixed bg-white" :class="store.isMobile?'window-width':'half-width'" style="bottom:0">
       <q-input borderless v-model="message" placeholder="Message" style="flex:1" class="q-px-md"
                @keyup.enter="sendMessage()"></q-input>
       <q-btn @click="sendMessage()" flat :disable="!message.length">
@@ -150,5 +150,8 @@ const sendMessage = async () => {
   mix-blend-mode: overlay;
   background: center repeat;
   background-size: 420px auto;
+}
+.half-width{
+  width: 50vw;
 }
 </style>
