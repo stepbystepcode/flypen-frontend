@@ -2,13 +2,6 @@ import { app, BrowserWindow, nativeTheme } from 'electron';
 import path from 'path';
 import os from 'os';
 
-const express = require('express')
-const app = express()
-
-app.use(express.static(path.join(__dirname)))
-
-const server = app.listen(3000)
-
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
@@ -39,8 +32,7 @@ function createWindow() {
   });
 
   //mainWindow.loadURL(path.join('file://', __dirname, './index.html'));
-  //mainWindow.loadURL(process.env.APP_URL);
-  mainWindow.loadURL('http://localhost:3000')
+  mainWindow.loadURL(process.env.APP_URL);
 
   if (process.env.DEBUGGING) {
     // if on DEV or Production with debug enabled
