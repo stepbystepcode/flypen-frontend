@@ -10,7 +10,7 @@
   </div>
   <div class="row">
     <div class="q-pa-md q-gutter-sm">
-      <q-tree v-if="final" ref="treeObj" :nodes="final" node-key="key" style="min-width: 27vw;max-width: 27vw;"
+      <q-tree v-if="final" ref="treeObj" :nodes="final" node-key="key"
               selected-color="primary" v-model:selected="key" @update:selected="select(key)" default-expand-all/>
     </div>
     <div class="container">
@@ -63,9 +63,9 @@ const touch=()=>{
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
         commandReq(5, selectFolder.value+login,'').then(res => {
-          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => {
+          if (res.data.code === 200) Swal.fire('Success', '', 'success').then(() => {
             commandReq(0, '', '').then(res => {
-              tree(res.data);
+              tree(JSON.parse(res.data.message));
             })
           })
           else Swal.fire('Fail', '', 'error')
@@ -89,10 +89,10 @@ const addFolder = () => {
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
         commandReq(4, selectFolder.value+login,'').then(res => {
-          if (res.data === 'success') Swal.fire('Success', '', 'success').then(() => {
+          if (res.data.code === 200) Swal.fire('Success', '', 'success').then(() => {
 
             commandReq(0, '', '').then(res => {
-              tree(res.data);
+              tree(JSON.parse(res.data.message));
             })
           })
           else Swal.fire('Fail', '', 'error')
@@ -119,7 +119,7 @@ const deleteFile = () => {
       Swal.fire('Success', '', 'success').then(()=>{
 
         commandReq(0, '', '').then(res => {
-          tree(res.data);
+          tree(JSON.parse(res.data.message));
         })
       })
     })
@@ -165,13 +165,13 @@ const select = (key) => {
     selectFile.value = selectNode.value.label;
     selectFolder.value = selectFolder.value === selectFile.value ? selectNode.value.path+'/' :selectNode.value.path.slice(0, selectNode.value.path.length - selectFile.value.length - 1) ;
     commandReq(6, selectNode.value.path, '').then(res => {
-      content.value = res.data.toString();
+      content.value = res.data.message.toString();
     })
   }
 }
 onMounted(() => {
   commandReq(0, '', '').then(res => {
-    tree(res.data);
+    tree(JSON.parse(res.data.message));
   })
 })
 const tree = (res) => {
@@ -259,14 +259,14 @@ const paste = (n) => {
     copyed.value = false;
 
     commandReq(0, '', '').then(res => {
-      tree(res.data);
+      tree(JSON.parse(res.data.message));
     })
   } else {
     commandReq(2, movefile.value, selectFolder.value);
     moved.value = false;
 
     commandReq(0, '', '').then(res => {
-      tree(res.data);
+      tree(JSON.parse(res.data.message));
     })
 
   }
@@ -299,7 +299,7 @@ const imgAdd = (pos, file) => {
       'content-type': 'multipart/form-data'
     }
   }).then((res) => {
-    const url = `http://8.130.48.157:8081/api/file/get?filename=${res.data}`;
+    const url = `http://8.130.48.157:8081/api/file/get?filename=${res.data.message}`;
     content.value = content.value.replace(/!\[[^\]]+\]\([^)]+\)/, `![](${url})`);
   })
 }
@@ -307,9 +307,11 @@ const imgAdd = (pos, file) => {
 </script>
 
 <style lang="scss" scoped>
+.container{
+  flex:1;
+}
 .content {
   padding: 24px;
-
   .box {
     padding: 24px;
     border: 1px solid #e3e6e8;

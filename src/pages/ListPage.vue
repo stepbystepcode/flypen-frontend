@@ -1,7 +1,7 @@
 <template>
   <q-page class="column" v-if="list">
     <div class="person items-center relative-position" v-for="(person, i) in list" :key="i" v-ripple.early>
-      <div class="row items-center" @click="router.push(`/chat/person/${person.username}`)"
+      <div class="row items-center" @click="store.unread[person.username]=0;router.push(`/chat/person/${person.username}`)"
            v-touch-hold.mouse="handleHold"
            :style="`width: 100vw;background-color:${selected===person.username?'gainsboro':'none'};`">
         <q-avatar class="q-ma-md"><img :src="store.avatar(person.avatar)" alt=""></q-avatar>
@@ -10,8 +10,11 @@
                                                                 class="q-mb-sm">{{ person.username }}</span><span
             class="text-grey q-mr-md"
             v-if="store.history[person.username]">{{ time(store.history[person.username].at(-1).time) }}</span></div>
+          <div class="row justify-between">
           <span v-if="store.history[person.username]"
                 style="color:#808080">{{ store.history[person.username].at(-1).content }}</span>
+            <div style="background: red;border-radius: 100px" class="q-px-sm text-white q-mr-md" v-if="store.unread[person.username]">{{store.unread[person.username]}}</div>
+          </div>
         </div>
       </div>
       <q-separator/>
