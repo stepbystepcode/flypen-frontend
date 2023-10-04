@@ -1,5 +1,5 @@
 <template>
-  <mavon-editor :codeStyle=codeStyle :externalLink="externalLink" :ishljs="true" :autofocus="false" placeholder=" "
+  <mavon-editor :subfield="false" defaultOpen="preview" :codeStyle=codeStyle :externalLink="externalLink" :ishljs="true" :autofocus="false" placeholder=" "
                 :toolbars="toolbars" />
 </template>
 

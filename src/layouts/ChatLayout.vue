@@ -105,7 +105,10 @@ const $q = useQuasar()
 watch(
   () => $q.screen.width,
   (newWidth) => {
-    store.isMobile = newWidth < 400
+    if (route.path.includes('login')||route.path.includes('signup')||route.path.includes('avatar')||route.path.includes('file'))
+      store.isMobile=true;
+    else
+    store.isMobile = newWidth < 450
   }
 )
 const setColor = () => {
