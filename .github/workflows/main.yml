@@ -39,6 +39,7 @@ jobs:
       run: |
         quasar build -m electron -T mas -A arm64
         cd dist/electron/Packaged
+        ls -alh
         zip -r  Mac-Apple-Chip-arm64.zip Flypen-mac-arm64
         cd -
     
