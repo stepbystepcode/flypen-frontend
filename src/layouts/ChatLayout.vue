@@ -82,10 +82,10 @@
     </q-drawer>
 
     <q-page-container style="display: flex">
-      <q-page-container :class="{'is-mobile':store.isMobile,half:!store.isMobile}" class="no-padding" style="background: #fff">
+      <q-page-container :class="{'is-mobile':store.isMobile,half:!store.isMobile,'not-mobile-left':!store.isMobile}" class="no-padding" style="background: #fff">
         <router-view name="fakeSidebar"></router-view>
     </q-page-container>
-      <q-page-container style="flex:1" :class="{half:!store.isMobile}" class="no-padding">
+      <q-page-container style="flex:1" :class="{half:(!store.isMobile&&route.path.includes('person')),'not-mobile-right':(!store.isMobile&&route.path.includes('person'))}" class="no-padding">
       <router-view v-slot="{ Component }">
         <transition
           enter-active-class="animated fadeInRight"
@@ -176,6 +176,13 @@ try {
 .half{
   max-width: 50vw;
   overflow: hidden;
+}
+.not-mobile-left{
+  position: fixed;
+  height: 100vh;
+}
+.not-mobile-right{
+  margin-left:50vw;
 }
 
 </style>
