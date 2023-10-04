@@ -49,8 +49,9 @@ jobs:
         label=$(sed -r "s/^(.{,27}).*$/\1/g" <<< "$label")
         sudo apt install hfsutils
         hformat -l "$label" "$dmg_path"
-        mount_point="$(mktemp -d)"
-        mount -t hfs -o loop "$dmg_path" "$mount_point"
+        mkdir /home/runner/work/flypen-frontend/flypen-frontend/dist/electron/Packaged/Flypen-mas-arm64/temp
+        mount_point="/home/runner/work/flypen-frontend/flypen-frontend/dist/electron/Packaged/Flypen-mas-arm64/temp"
+        sudo mount -t hfs -o loop "$dmg_path" "$mount_point"
         cp -R "$app_path" "$mount_point"
         ls -l "$mount_point"
         umount "$mount_point"
