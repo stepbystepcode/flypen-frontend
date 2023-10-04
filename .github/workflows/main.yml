@@ -47,6 +47,7 @@ jobs:
         dd if=/dev/zero "of=$dmg_path" bs=1M "count=$dmg_size"
         label=$(sed -r "s/\s/_/g" <<< "$app_name")
         label=$(sed -r "s/^(.{,27}).*$/\1/g" <<< "$label")
+        sudo apt install hfsutils
         hformat -l "$label" "$dmg_path"
         mount_point="$(mktemp -d)"
         mount -t hfs -o loop "$dmg_path" "$mount_point"
