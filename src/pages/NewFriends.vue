@@ -63,6 +63,15 @@ const handle = (req, atti) => {
       icon: res.data.code===200?'success':'error',
     });
     list.value = list.value.filter((item) => item.username !== req);
+    axios.post('http://8.130.48.157:8081/api/info', '', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application-json'
+        }
+      }
+    ).then((res) => {
+      store.info.friends = res.data.message[username].friends;
+    })
   })
 
 }
