@@ -33,7 +33,7 @@ jobs:
         tag_name: ${{ github.run_number }}
         release_name: Release ${{ github.run_number }}
         draft: false
-        prerelease: true
+        prerelease: false
         
     - name: Build Mac Package
       run: |
