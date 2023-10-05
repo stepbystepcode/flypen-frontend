@@ -16,7 +16,7 @@ export const useCheckStore = defineStore('check', () => {
   }
   const update = () => {
     if (window.location.pathname !== '/login' && window.location.pathname !== '/signup')
-      axios.post('http://8.130.48.157:8081/api/check?type=new', '', {
+      axios.post('http://127.0.0.1:8081/api/check?type=new', '', {
 
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem('token')}`
