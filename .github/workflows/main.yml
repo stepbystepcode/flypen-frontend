@@ -33,7 +33,39 @@ jobs:
         tag_name: ${{ github.run_number }}
         release_name: Release ${{ github.run_number }}
         draft: false
-        prerelease: true
+        prerelease: false
+        
+    - name: Build Mac Package
+      run: |
+        quasar build -m electron -T mas -A arm64
+        cd dist/electron/Packaged
+        # app_path="/home/runner/work/flypen-frontend/flypen-frontend/dist/electron/Packaged/Flypen-mas-arm64/Flypen.app/"
+        # app_name="$(basename "$app_path" | sed -r "s/\.app$//g")"
+        # dmg_size="$(du -ms "$app_path" | grep -oP "^\d+")"
+        # dmg_path=$(sed -r "s/\.app\/?$/.dmg/g" <<< "$app_path")
+        # set -x
+        # dd if=/dev/zero "of=$dmg_path" bs=1M "count=$dmg_size"
+        # label=$(sed -r "s/\s/_/g" <<< "$app_name")
+        # label=$(sed -r "s/^(.{,27}).*$/\1/g" <<< "$label")
+        # sudo apt install hfsutils hfsprogs
+        # sudo hformat -l "$label" "$dmg_path"
+        # mount_point="$(sudo mktemp -d)"
+        # sudo mount -t hfs -o loop "$dmg_path" "$mount_point"
+        # cp -R "$app_path" "$mount_point"
+        # ls -l "$mount_point"
+        # umount "$mount_point"
+        zip -r flypen-mac-apple-chip.zip Flypen-mas-arm64
+        cd -
+    
+    - name: Upload Mac
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.AAA }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/electron/Packaged/flypen-mac-apple-chip.zip
+        asset_name: flypen-mac-apple-chip.zip
+        asset_content_type: application/zip
         
     - name: Build Linux Package
       run: |
@@ -69,7 +101,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./dist/electron/Packaged/Windows-x86_64.zip
         asset_name: flypen-windows-x86_64.zip
-        asset_content_type: application/application/zip
+        asset_content_type: application/zip
         
     - name: Set up jdk
       run: |

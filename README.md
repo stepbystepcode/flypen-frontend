@@ -13,10 +13,12 @@
 ## C++ Course Design
 
 
-This is a cross-platform multi-end application built with Vue 3 and Quasar framework. It supports web, Android, iOS, Windows, Linux and macOS.
+This is a cross-platform multi-end application built with Vue3 and Quasar framework. It supports Web, Android, Windows, Linux and MacOS.
+
+Backend Project for Flypen is [Here](https://github.com/stepbystepcode/flypen)
 
 ## Features
-- Cross-platform support for Web and Android (iOS and other platforms coming soon)
+- Cross-platform support (iOS platforms coming soon)
 - Real-time chat and messaging
 - Friend management
 - Team collaboration
@@ -34,7 +36,7 @@ This is a cross-platform multi-end application built with Vue 3 and Quasar frame
 
 ## Develop from source 
 *node version v18.18.0*
-```shell
+```bash
 git clone https://github.com/stepbystepcode/flypen-frontend.git
 cd flypen-frontend
 npm i
@@ -44,7 +46,7 @@ quasar dev
 
 ## Build apk file from source 
 *node version v18.18.0*
-```shell
+```bash
 git clone https://github.com/stepbystepcode/flypen-frontend.git
 cd flypen-frontend
 npm i
@@ -64,8 +66,8 @@ java -jar uber-apk-signer-1.3.0.jar -a ./dist/capacitor/android/apk/release/app-
 you will find apk file in ```./signed/app-release-aligned-debugSigned.apk```
 
 ## Get Started
-### Download the app
-[Download Flypen App](https://github.com/stepbystepcode/flypen-frontend/releases/download/latests/app.apk)
+### Download
+[Download Flypen](https://github.com/stepbystepcode/flypen-frontend/releases)
 
 The GitHub release apk is automatically deployed via GitHub Actions on push to main branch.
 
