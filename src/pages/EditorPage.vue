@@ -13,18 +13,14 @@
       <q-tree v-if="final" ref="treeObj" :nodes="final" node-key="key"
               selected-color="primary" v-model:selected="key" @update:selected="select(key)" default-expand-all/>
     </div>
-    <div class="container">
-      <div class="content">
-        <div class="box">
-          <span>file name</span>
-          <input type="text" class="input" v-model="selectFile">
-        </div>
-        <div class="box">
-          <Editor style="z-index: 50" v-model="content" @imgAdd="imgAdd"/>
-          <div class="q-mt-md row justify-end">
-            <q-btn class="bg-primary text-white" style="width: 5rem;" @click="save()">Save</q-btn>
-          </div>
-        </div>
+    <div style="width: 100vw;display: flex">
+      <div class="q-ma-sm">file name</div>
+      <input type="text" class="input" v-model="selectFile">
+    </div>
+    <div style="width: 100vw">
+      <Editor style="z-index: 50" v-model="content" @imgAdd="imgAdd"/>
+      <div class="q-mt-md row justify-end">
+        <q-btn class="bg-primary text-white" style="width: 5rem;" @click="save()">Save</q-btn>
       </div>
     </div>
   </div>
@@ -37,6 +33,7 @@ import {ref, onMounted} from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import {useQuasar} from 'quasar';
+
 const $q = useQuasar();
 const copyed = ref(false);
 const moved = ref(false);
@@ -49,7 +46,7 @@ const key = ref('');
 const treeObj = ref(null);
 const selectNode = ref(null);
 const selectFolder = ref('');
-const touch=()=>{
+const touch = () => {
   if (selectFolder.value === null) Swal.fire('Please select folder', '', 'warning')
   else {
     Swal.fire({
@@ -62,7 +59,7 @@ const touch=()=>{
       confirmButtonText: 'Create',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
-        commandReq(5, selectFolder.value+login,'').then(res => {
+        commandReq(5, selectFolder.value + login, '').then(res => {
           if (res.data.code === 200) Swal.fire('Success', '', 'success').then(() => {
             commandReq(0, '', '').then(res => {
               tree(JSON.parse(res.data.message));
@@ -72,7 +69,7 @@ const touch=()=>{
         })
       }
     })
-}
+  }
 
 }
 const addFolder = () => {
@@ -88,7 +85,7 @@ const addFolder = () => {
       confirmButtonText: 'Create',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
-        commandReq(4, selectFolder.value+login,'').then(res => {
+        commandReq(4, selectFolder.value + login, '').then(res => {
           if (res.data.code === 200) Swal.fire('Success', '', 'success').then(() => {
 
             commandReq(0, '', '').then(res => {
@@ -103,7 +100,7 @@ const addFolder = () => {
 }
 
 const deleteFile = () => {
-  if (selectFile.value === ''&&selectFolder.value==='') Swal.fire('Please select file or folder', '', 'warning')
+  if (selectFile.value === '' && selectFolder.value === '') Swal.fire('Please select file or folder', '', 'warning')
   else {
     Swal.fire({
       title: 'Confirm delete?',
@@ -116,7 +113,7 @@ const deleteFile = () => {
     }).then((result) => {
       if (result.isDismissed) return;
       commandReq(3, selectNode.value.path, '')
-      Swal.fire('Success', '', 'success').then(()=>{
+      Swal.fire('Success', '', 'success').then(() => {
 
         commandReq(0, '', '').then(res => {
           tree(JSON.parse(res.data.message));
@@ -142,7 +139,7 @@ const save = () => {
       if (result.isDismissed) return;
       const json = JSON.stringify({
         content: content.value,
-        filename: selectFolder.value+'/'+selectFile.value,
+        filename: selectFolder.value + '/' + selectFile.value,
         //time: new Date().getTime()
       });
       axios.post('http://8.130.48.157:8081/api/file/save', json, {
@@ -159,11 +156,11 @@ const save = () => {
 const select = (key) => {
   selectNode.value = treeObj.value.getNodeByKey(key);
   if (selectNode.value.icon === 'folder') {
-    selectFolder.value = selectNode.value.path+'/';
+    selectFolder.value = selectNode.value.path + '/';
     content.value = '';
   } else {
     selectFile.value = selectNode.value.label;
-    selectFolder.value = selectFolder.value === selectFile.value ? selectNode.value.path+'/' :selectNode.value.path.slice(0, selectNode.value.path.length - selectFile.value.length - 1) ;
+    selectFolder.value = selectFolder.value === selectFile.value ? selectNode.value.path + '/' : selectNode.value.path.slice(0, selectNode.value.path.length - selectFile.value.length - 1);
     commandReq(6, selectNode.value.path, '').then(res => {
       content.value = res.data.message.toString();
     })
@@ -176,7 +173,7 @@ onMounted(() => {
 })
 const tree = (res) => {
   raw.value = res;
-  transform(raw.value[0], '0','.');
+  transform(raw.value[0], '0', '.');
   raw.value.pop();
   final.value = raw.value;
 }
@@ -189,10 +186,11 @@ const transform = (item, key, path) => {
     item.key = key;
     item.children = item.contents;
     delete item.contents;
-    if (item.children){
-    item.children.forEach((child, index) => {
-      transform(child, key + '-' + index, path + '/' + child.name);
-    })}
+    if (item.children) {
+      item.children.forEach((child, index) => {
+        transform(child, key + '-' + index, path + '/' + child.name);
+      })
+    }
   } else {
     item.icon = 'insert_drive_file'
     item.key = key
@@ -247,10 +245,10 @@ const transform = (item, key, path) => {
 const cpmv = (n) => {
   if (n === 1) {
     copyed.value = true;
-    copyfile.value = selectFolder.value+'/'+selectFile.value;
+    copyfile.value = selectFolder.value + '/' + selectFile.value;
   } else {
     moved.value = true;
-    movefile.value = selectFolder.value+'/'+selectFile.value;
+    movefile.value = selectFolder.value + '/' + selectFile.value;
   }
 }
 const paste = (n) => {
@@ -287,7 +285,6 @@ const paste = (n) => {
 // }
 
 
-
 let content = ref('');
 const imgAdd = (pos, file) => {
   console.log(file);
@@ -307,57 +304,4 @@ const imgAdd = (pos, file) => {
 </script>
 
 <style lang="scss" scoped>
-.container{
-  flex:1;
-}
-.content {
-  padding: 24px;
-  .box {
-    padding: 24px;
-    border: 1px solid #e3e6e8;
-    border-radius: 3px;
-    display: flex;
-    flex-direction: column;
-    margin-top: 12px;
-
-    span {
-      padding-bottom: 1em;
-    }
-
-    .input {
-      flex: 1;
-      outline: rgb(107, 137, 147);
-      border: 1px solid #babfc4;
-      border-radius: 3px;
-      display: flex;
-
-      &:focus {
-        border: 1px solid #6bbbf7;
-        box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
-      }
-
-      input {
-        border: none;
-        outline: none;
-        flex: 1;
-        padding: .6em .7em;
-      }
-    }
-
-    input {
-      padding: .6em .7em;
-    }
-  }
-
-}
-
-.pill {
-  display: inline-block;
-  margin: 2px;
-  background: #e1ecf4;
-  padding: 8px;
-  color: #39739d;
-  border-radius: 3px;
-  font-size: 12px;
-}
 </style>
