@@ -27,7 +27,10 @@
 import {ref} from 'vue'
 import {useRouter} from 'vue-router';
 import {useCheckStore} from 'stores/check';
+import axios from "axios";
 
+import {useQuasar} from 'quasar';
+const $q = useQuasar()
 const store = useCheckStore();
 const selected = ref('');
 const handleHold = ({evt}) => {
@@ -49,11 +52,21 @@ const time = (time) => {
 }
 const router = useRouter();
 const list = ref();
-list.value = store.info.friends.sort((a, b) => {
-  const timeA = store.order?.[a.username];
-  const timeB = store.order?.[b.username];
-  if (!timeA) return 1
-  if (!timeB) return -1
-  return new Date(timeB) - new Date(timeA)
-});
+const token = $q.localStorage.getItem('token');
+axios.post('http://8.130.48.157:8081/api/info', '', {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application-json'
+    }
+  }
+).then((res) => {
+  store.info.friends = res.data.message[store.info.username].friends;
+  list.value = store.info.friends.sort((a, b) => {
+    const timeA = store.order?.[a.username];
+    const timeB = store.order?.[b.username];
+    if (!timeA) return 1
+    if (!timeB) return -1
+    return new Date(timeB) - new Date(timeA)
+  });
+})
 </script>
