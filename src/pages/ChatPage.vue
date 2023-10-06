@@ -12,6 +12,8 @@
                       :avatar="store.avatar(item.sender === route.params.id ? yourAvatar : myAvatar)"
                       :bg-color="`${item.sender == route.params.id ? 'white' : 'info'}`" :text="[item.content]"
                       :stamp="item.time"
+                      :data-name="item.sender"
+                      @click="Profile"
                       :sent="item.sender != route.params.id"/>
     </div>
     <div class="row fixed bg-white" :class="store.isMobile?'window-width':'half-width'" style="bottom:0">
@@ -57,6 +59,11 @@ const config = {
 //     history.value = res.data
 //   })
 // }
+const Profile = (e) => {
+  if(e.srcElement.parentElement.parentElement.parentElement.dataset?.name){
+  router.push(`/profile/${e.srcElement.parentElement.parentElement.parentElement.dataset?.name}`)
+  }
+}
 onMounted(() => {
   // setInterval(update, 500);
   axios.post('http://8.130.48.157:8081/api/info', {
