@@ -62,7 +62,7 @@ const signup = () => {
       title: 'Please fill out all required fields.',
       icon: 'error',
     });
-  else if (validatePassword(password.value))
+  else if (!validatePassword(password.value))
     Swal.fire({
       icon: 'error',
       title: 'Invalid Password',
