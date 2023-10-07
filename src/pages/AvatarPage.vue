@@ -40,7 +40,7 @@ const setAvatar = () => {
         title: res.data,
         icon: res.data.includes('Success') ? 'success' : 'error',
       }).then(
-        () => { localStorage.setItem('avatar', avatar.value); router.push('/chat'); }
+        () => { Swal.fire('Login Expired. Please login again.'); router.push('/login'); }
       );
     });
 };

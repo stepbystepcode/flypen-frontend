@@ -30,7 +30,8 @@ export const useCheckStore = defineStore('check', () => {
             history.value[key] = [...history.value[key], ...res.data.message[key]];
             if (!unread.value[key])
               unread.value[key] = 0;
-            unread.value[key]+=res.data.message[key].length;
+            if (res.data.message[key][0].sender===info.value.username)
+              unread.value[key]+=res.data.message[key].length;
             LocalStorage.set('history', history.value)
             if (!order.value) order.value = {};
             if (!(key in order.value)) order.value[key] = [];
