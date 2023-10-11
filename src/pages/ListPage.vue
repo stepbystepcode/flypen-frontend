@@ -12,7 +12,7 @@
             v-if="store.history[person.username]">{{ time(store.history[person.username].at(-1).time) }}</span></div>
           <div class="row justify-between">
           <span v-if="store.history[person.username]"
-                style="color:#808080">{{ store.history[person.username].at(-1).content }}</span>
+                style="color:#808080;width: 60vw" class="ellipsis">{{ store.history[person.username].at(-1).content }}</span>
             <div style="background: red;border-radius: 100px" class="q-px-sm text-white q-mr-md" v-if="store.unread[person.username]">{{store.unread[person.username]}}</div>
           </div>
         </div>
