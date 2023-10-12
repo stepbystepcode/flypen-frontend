@@ -3,9 +3,9 @@
   <div style="width: 80vw; margin: 0 auto">
     <div class="text-h4 q-my-sm">Choose your photo</div>
     <div style="display: grid;grid-template-columns: repeat(4,1fr)">
-      <div v-for="i in 31" class="row flex-center" :key="i" @click="console.log(i); selectAvatar(i)"
-        :style="`border:${avatar === i ? '4px #1976D2 solid' : '4px #fff solid'}`">
-        <img :src="store.avatar(i)" alt="" style="width: 60px; height: 60px">
+      <div v-for="i in 32" class="row flex-center" :key="i" @click="selectAvatar(i-1)"
+        :style="`border:${avatar === i-1 ? '4px #1976D2 solid' : '4px #fff solid'}`">
+        <img :src="store.avatar(i-1)" alt="" style="width: 60px; height: 60px">
       </div>
     </div>
     <div class="row justify-end q-my-md">
