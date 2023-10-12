@@ -15,19 +15,34 @@
     <img style="width: 100vw" :src="getAvatar()" alt="">
     </div>
     <div class="username text-h4">{{route.params.id}}</div>
+    <div class="q-ml-md" style="margin-top: -2rem">
+    <div class="text-primary text-bold">Account</div>
+    <div class="q-mt-sm text-h6"><q-icon name="alternate_email"></q-icon> {{route.params.id}}</div>
+    <div class="text-grey q-mb-sm">Username</div>
+    <q-separator/>
+      <div class="q-mt-sm text-h6"><q-icon name="calendar_month"></q-icon> {{getTime()}}</div>
+      <div class="text-grey q-mb-sm">Register Time</div>
+    </div>
     <q-separator/>
   </div>
 </template>
 <script setup>
-import {useQuasar} from 'quasar';
-const $q = useQuasar();
+import {date, useQuasar} from 'quasar';
 import {useCheckStore} from 'stores/check';
+import {useRoute, useRouter} from 'vue-router';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+
+const $q = useQuasar();
 const store = useCheckStore();
-import {useRoute,useRouter} from 'vue-router';
-import Swal from "sweetalert2";
-import axios from "axios";
 const router = useRouter()
 const route = useRoute();
+const getTime=()=>{
+  let timeStamp;
+  if(store.info.username===route.params.id) timeStamp = new Date(store.info.registerTime);
+  else timeStamp = new Date(store.info.friends.find(item => item.username === route.params.id).registerTime);
+  return date.formatDate(timeStamp, 'MMMM YYYY');
+}
 const getAvatar=()=>{
   if(store.info.username===route.params.id){
     return store.avatar(store.info.avatar)
