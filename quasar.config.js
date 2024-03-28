@@ -106,7 +106,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['LocalStorage']
+      plugins: ['LocalStorage','Notify']
     },
 
     // https://v2.quasar.dev/options/animations

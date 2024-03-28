@@ -52,7 +52,7 @@ const config = {
 }
 
 // const update = () => {
-//   axios.post('http://8.130.48.157:8081/api/check', {
+//   axios.post('http://8.130.101.128:8081/api/check', {
 //       person: route.params.id
 //     }, config
 //   ).then((res) => {
@@ -66,7 +66,7 @@ const Profile = (e) => {
 }
 onMounted(() => {
   // setInterval(update, 500);
-  axios.post('http://8.130.48.157:8081/api/info', {
+  axios.post('http://8.130.101.128:8081/api/info', {
       person: route.params.id
     }, config
   ).then((res) => {
@@ -102,12 +102,13 @@ const sendMessage = async () => {
     if (message.value.length>100) {
       $q.notify({
         message: 'Message too long!',
-        color: 'negative',
-        position: 'top'
+        type:'warning',
+        color:'yellow',
+        position: 'bottom'
       })
       return
     }
-    await axios.post('http://8.130.48.157:8081/api/chat', {
+    await axios.post('http://8.130.101.128:8081/api/chat', {
         content: message.value,
         receiver: route.params.id
       }, config

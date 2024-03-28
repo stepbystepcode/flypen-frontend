@@ -74,7 +74,7 @@ const signup = () => {
   });
   else
     axios
-      .post('http://8.130.48.157:8081/api/signup', {
+      .post('http://8.130.101.128:8081/api/signup', {
         username: username.value,
         password: password.value,
       })

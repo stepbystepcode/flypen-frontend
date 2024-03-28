@@ -53,7 +53,7 @@ const token = $q.localStorage.getItem('token')
 const delFriend=()=>{
   Swal.fire({title:'Are you sure to delete this friend?',text:'You will not be able to recover this friend!',icon:'warning',showCancelButton:true,reverseButtons:true}).then((res)=>{
     if(res.isConfirmed) {
-      axios.post(`http://8.130.48.157:8081/api/newfriends?operation=delete&username=${route.params.id}`,'',{headers:{Authorization:`Bearer ${token}`}}).then((res)=>{
+      axios.post(`http://8.130.101.128:8081/api/newfriends?operation=delete&username=${route.params.id}`,'',{headers:{Authorization:`Bearer ${token}`}}).then((res)=>{
         if(res.data.code===200){
           Swal.fire('Deleted!','Your friend has been deleted.','success').then(()=>{
             router.push('/chat')
