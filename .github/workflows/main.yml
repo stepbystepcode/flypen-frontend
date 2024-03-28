@@ -22,7 +22,7 @@ jobs:
       run: npm install
 
     - name: Install Quasar CLI
-      run: npm install -g pnpm @quasar/cli @quasar/icongenie
+      run: npm install -g @quasar/cli @quasar/icongenie
 
     - name: Create Release
       id: create_release
@@ -34,7 +34,7 @@ jobs:
         release_name: Release ${{ github.run_number }}
         draft: false
         prerelease: false
-        
+
     - name: Build Mac Package
       run: |
         quasar build -m electron -T mas -A arm64
@@ -56,7 +56,7 @@ jobs:
         # umount "$mount_point"
         zip -r flypen-mac-apple-chip.zip Flypen-mas-arm64
         cd -
-    
+
     - name: Upload Mac
       uses: actions/upload-release-asset@v1
       env:
@@ -66,14 +66,14 @@ jobs:
         asset_path: dist/electron/Packaged/flypen-mac-apple-chip.zip
         asset_name: flypen-mac-apple-chip.zip
         asset_content_type: application/zip
-        
+
     - name: Build Linux Package
       run: |
         quasar build -m electron
         cd dist/electron/Packaged
         tar -zcvf Linux-x86_64.tar.gz Flypen-linux-x64
         cd -
-    
+
     - name: Upload Linux
       uses: actions/upload-release-asset@v1
       env:
@@ -83,7 +83,7 @@ jobs:
         asset_path: ./dist/electron/Packaged/Linux-x86_64.tar.gz
         asset_name: flypen-linux-x86_64.tar.gz
         asset_content_type: application/gzip
-        
+
     - name: Build Windows Package
       run: |
         sed -i "/packager:/a \ \ platform: 'win32'" quasar.config.js
@@ -92,7 +92,7 @@ jobs:
         cd dist/electron/Packaged
         zip -r  Windows-x86_64.zip Flypen-win32-x64
         cd -
-      
+
     - name: Upload Win32
       uses: actions/upload-release-asset@v1
       env:
@@ -102,7 +102,7 @@ jobs:
         asset_path: ./dist/electron/Packaged/Windows-x86_64.zip
         asset_name: flypen-windows-x86_64.zip
         asset_content_type: application/zip
-        
+
     - name: Set up jdk
       run: |
         sudo apt-get update
@@ -115,17 +115,17 @@ jobs:
       run:  |
         echo "org.flypen.app" | quasar mode add capacitor
         jq 'del(.server)' ./src-capacitor/capacitor.config.json > ./src-capacitor/edit.json && mv ./src-capacitor/edit.json ./src-capacitor/capacitor.config.json
-        
+
     - name: Build APK
-      env: 
+      env:
         JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
       run: quasar build -m capacitor -T android
-      
+
     - name: Add Icon
       run: icongenie generate -m capacitor -i ./icon.png
-      
+
     - name: Build APK with icon
-      env: 
+      env:
         JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
       run: quasar build -m capacitor -T android
 
@@ -141,7 +141,7 @@ jobs:
       run: |
         wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
         java -jar uber-apk-signer-1.3.0.jar -a ./dist/capacitor/android/apk/release/app-release-unsigned.apk --out signed
-    
+
     - name: Upload APK
       uses: actions/upload-release-asset@v1
       env:
