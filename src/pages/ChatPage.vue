@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import myBg from '../boot/bg.js';
 import {onMounted, ref} from 'vue'
-import axios from 'axios';
+import {api} from 'boot/axios';
 import {useRoute} from 'vue-router'
 import {useCheckStore} from 'stores/check';
 import Swal from 'sweetalert2';
@@ -52,7 +52,7 @@ const config = {
 }
 
 // const update = () => {
-//   axios.post('http://8.130.101.128:8081/api/check', {
+//   api.post('/api/check', {
 //       person: route.params.id
 //     }, config
 //   ).then((res) => {
@@ -66,7 +66,7 @@ const Profile = (e) => {
 }
 onMounted(() => {
   // setInterval(update, 500);
-  axios.post('http://8.130.101.128:8081/api/info', {
+  api.post('/api/info', {
       person: route.params.id
     }, config
   ).then((res) => {
@@ -108,7 +108,7 @@ const sendMessage = async () => {
       })
       return
     }
-    await axios.post('http://8.130.101.128:8081/api/chat', {
+    await api.post('/api/chat', {
         content: message.value,
         receiver: route.params.id
       }, config

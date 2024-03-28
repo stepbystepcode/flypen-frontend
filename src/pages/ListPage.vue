@@ -27,7 +27,7 @@
 import {ref} from 'vue'
 import {useRouter} from 'vue-router';
 import {useCheckStore} from 'stores/check';
-import axios from "axios";
+import {api} from 'boot/axios';
 
 import {useQuasar} from 'quasar';
 const $q = useQuasar()
@@ -53,7 +53,7 @@ const time = (time) => {
 const router = useRouter();
 const list = ref();
 const token = $q.localStorage.getItem('token');
-axios.post('http://8.130.101.128:8081/api/info', '', {
+api.post('/api/info', '', {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application-json'

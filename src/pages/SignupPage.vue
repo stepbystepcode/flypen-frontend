@@ -38,7 +38,7 @@
   </div>
 </template>
 <script setup>
-import axios from 'axios';
+import {api} from 'boot/axios';
 import {ref} from 'vue';
 import Swal from 'sweetalert2';
 import {useRouter} from 'vue-router';
@@ -73,8 +73,8 @@ const signup = () => {
     icon: 'error',
   });
   else
-    axios
-      .post('http://8.130.101.128:8081/api/signup', {
+    api
+      .post('/api/signup', {
         username: username.value,
         password: password.value,
       })
