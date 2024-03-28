@@ -142,7 +142,7 @@ const save = () => {
         filename: selectFolder.value + '/' + selectFile.value,
         //time: new Date().getTime()
       });
-      axios.post('http://8.130.48.157:8081/api/file/save', json, {
+      axios.post('http://8.130.101.128:8081/api/file/save', json, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${$q.localStorage.getItem('token')}`
@@ -290,13 +290,13 @@ const imgAdd = (pos, file) => {
   console.log(file);
   const formData = new FormData()
   formData.append('image', file);
-  axios.post('http://8.130.48.157:8081/api/upload', formData, {
+  axios.post('http://8.130.101.128:8081/api/upload', formData, {
     headers: {
       'Authorization': `Bearer ${$q.localStorage.getItem('token')}`,
       'content-type': 'multipart/form-data'
     }
   }).then((res) => {
-    const url = `http://8.130.48.157:8081/api/file/get?filename=${res.data.message}`;
+    const url = `http://8.130.101.128:8081/api/file/get?filename=${res.data.message}`;
     content.value = content.value.replace(/!\[[^\]]+\]\([^)]+\)/, `![](${url})`);
   })
 }

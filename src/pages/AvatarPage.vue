@@ -30,7 +30,7 @@ const selectAvatar = (num) => {
 };
 const setAvatar = () => {
   axios
-    .post(`http://8.130.48.157:8081/api/avatar?avatar=${avatar.value}`, {}, {
+    .post(`http://8.130.101.128:8081/api/avatar?avatar=${avatar.value}`, {}, {
       headers: {
         'Authorization': `Bearer ${$q.localStorage.getItem('token')}`,
       }

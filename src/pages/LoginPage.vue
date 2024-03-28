@@ -43,7 +43,7 @@ const login = () => {
       icon: 'error',
     });
   else axios
-    .post('http://8.130.48.157:8081/api/login', {
+    .post('http://8.130.101.128:8081/api/login', {
       username: username.value,
       password: password.value,
     })
@@ -55,7 +55,7 @@ const login = () => {
         $q.localStorage.set('token', res.data.token)
         $q.localStorage.set('info', res.data)
         const token=res.data.token;
-        axios.post('http://8.130.48.157:8081/api/info', {
+        axios.post('http://8.130.101.128:8081/api/info', {
             person: ''
           }, {
             headers: {
@@ -67,7 +67,7 @@ const login = () => {
           store.info = {...store.info,...res.data.message[store.info.username]};
           $q.localStorage.set('info', store.info)
         });
-        axios.post('http://8.130.48.157:8081/api/check?type=all', null, {
+        axios.post('http://8.130.101.128:8081/api/check?type=all', null, {
           headers: {
             'Authorization': `Bearer ${token}`
           }})
