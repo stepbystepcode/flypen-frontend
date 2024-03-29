@@ -10,7 +10,7 @@
 
 *Read this in other languages: [English](README.md), [简体中文](README.zh_Hans.md).*
 
-## C++ Course Design
+## Course Design
 
 
 This is a cross-platform multi-end application built with Vue3 and Quasar framework. It supports Web, Android, Windows, Linux and MacOS.

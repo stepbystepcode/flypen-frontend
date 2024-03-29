@@ -17,7 +17,7 @@
           </div>
         </q-toolbar-title>
 
-        <div>C++ Course Design</div>
+        <div>Cryptography Course Design</div>
       </q-toolbar>
     </q-header>
     <q-dialog v-model="pickerShow">
