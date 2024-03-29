@@ -29,10 +29,10 @@
 </template>
 
 <script setup>
+import {api} from 'boot/axios';
 import {useCheckStore} from 'stores/check';
 const store = useCheckStore();
 import {ref} from 'vue'
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import {useQuasar} from 'quasar';
 const $q = useQuasar()
@@ -41,7 +41,7 @@ const search = ref('');
 const token = $q.localStorage.getItem('token')
 const username = $q.localStorage.getItem('info').username
 const request = (atti) => {
-  axios.post(`http://8.130.101.128:8081/api/newfriends?username=${search.value}&operation=${atti}`, {}, {
+  api.post(`/api/newfriends?username=${search.value}&operation=${atti}`, {}, {
       headers: {
         'Authorization': `Bearer ${token}`,
       }
@@ -53,7 +53,7 @@ const request = (atti) => {
 
 }
 const handle = (req, atti) => {
-  axios.post(`http://8.130.101.128:8081/api/nfmgr?info=${atti}&username=${req}`, {}, {
+  api.post(`/api/nfmgr?info=${atti}&username=${req}`, {}, {
     headers: {
       'Authorization': `Bearer ${token}`,
     }
@@ -63,7 +63,7 @@ const handle = (req, atti) => {
       icon: res.data.code===200?'success':'error',
     });
     list.value = list.value.filter((item) => item.username !== req);
-    axios.post('http://8.130.101.128:8081/api/info', '', {
+    api.post('/api/info', '', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application-json'
@@ -76,7 +76,7 @@ const handle = (req, atti) => {
 
 }
 
-  axios.post('http://8.130.101.128:8081/api/info', '', {
+  api.post('/api/info', '', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application-json'

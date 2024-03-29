@@ -38,7 +38,7 @@
   </div>
 </template>
 <script setup>
-import axios from 'axios';
+import {api} from 'boot/axios';
 import {ref} from 'vue';
 import Swal from 'sweetalert2';
 import {useRouter} from 'vue-router';
@@ -48,33 +48,33 @@ const username = ref('');
 const password = ref('');
 const passwordVer = ref('');
 const isPwd = ref(true);
-function validatePassword(password) {
-  return (
-    password.length > 8 &&
-    password !== password.toUpperCase() &&
-    password !== password.toLowerCase() &&
-    /\d/.test(password)
-  );
-}
+// function validatePassword(password) {
+//   return (
+//     password.length > 8 &&
+//     password !== password.toUpperCase() &&
+//     password !== password.toLowerCase() &&
+//     /\d/.test(password)
+//   );
+// }
 const signup = () => {
   if (username.value === '' || password.value === '' || passwordVer.value === '')
     Swal.fire({
       title: 'Please fill out all required fields.',
       icon: 'error',
     });
-  else if (!validatePassword(password.value))
-    Swal.fire({
-      icon: 'error',
-      title: 'Invalid Password',
-      text: 'Password must contain both uppercase and lowercase letters plus numbers',
-    });
+  // else if (!validatePassword(password.value))
+  //   Swal.fire({
+  //     icon: 'error',
+  //     title: 'Invalid Password',
+  //     text: 'Password must contain both uppercase and lowercase letters plus numbers',
+  //   });
   else if (password.value !== passwordVer.value) Swal.fire({
     title: 'Passwords do not match',
     icon: 'error',
   });
   else
-    axios
-      .post('http://8.130.101.128:8081/api/signup', {
+    api
+      .post('/api/signup', {
         username: username.value,
         password: password.value,
       })

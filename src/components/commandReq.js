@@ -1,8 +1,8 @@
-import axios from 'axios'
+import api from 'src/boot/axios'
 import {LocalStorage} from "quasar";
 
 export default function commandReq(com,params1,params2) {
-  return axios.post('http://8.130.101.128:8081/api/file/commands',{
+  return api.post('/api/file/commands',{
       command: com.toString(),
       params: [params1,params2]
     },{

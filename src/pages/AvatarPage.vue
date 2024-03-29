@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup>
-import axios from 'axios';
+import { api } from 'boot/axios';
 import { ref } from 'vue';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
@@ -29,8 +29,8 @@ const selectAvatar = (num) => {
   avatar.value = num;
 };
 const setAvatar = () => {
-  axios
-    .post(`http://8.130.101.128:8081/api/avatar?avatar=${avatar.value}`, {}, {
+  api
+    .post(`/api/avatar?avatar=${avatar.value}`, {}, {
       headers: {
         'Authorization': `Bearer ${$q.localStorage.getItem('token')}`,
       }

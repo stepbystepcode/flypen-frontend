@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue'
-import axios from 'axios'
+import {api} from 'boot/axios';
 import {LocalStorage, Screen} from 'quasar'
 
 export const useCheckStore = defineStore('check', () => {
@@ -17,7 +17,7 @@ export const useCheckStore = defineStore('check', () => {
   }
   const update = () => {
     if (window.location.pathname !== '/login' && window.location.pathname !== '/signup')
-      axios.post('http://8.130.101.128:8081/api/check?type=new', '', {
+      api.post('/api/check?type=new', '', {
 
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem('token')}`

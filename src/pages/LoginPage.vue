@@ -24,7 +24,7 @@
   </div>
 </template>
 <script setup>
-import axios from 'axios';
+import {api} from 'boot/axios';
 import {ref} from 'vue';
 import Swal from 'sweetalert2';
 import {useRouter} from 'vue-router';
@@ -42,8 +42,8 @@ const login = () => {
       title: 'Please fill out all required fields.',
       icon: 'error',
     });
-  else axios
-    .post('http://8.130.101.128:8081/api/login', {
+  else api
+    .post('/api/login', {
       username: username.value,
       password: password.value,
     })
@@ -55,7 +55,7 @@ const login = () => {
         $q.localStorage.set('token', res.data.token)
         $q.localStorage.set('info', res.data)
         const token=res.data.token;
-        axios.post('http://8.130.101.128:8081/api/info', {
+        api.post('/api/info', {
             person: ''
           }, {
             headers: {
@@ -67,7 +67,7 @@ const login = () => {
           store.info = {...store.info,...res.data.message[store.info.username]};
           $q.localStorage.set('info', store.info)
         });
-        axios.post('http://8.130.101.128:8081/api/check?type=all', null, {
+        api.post('/api/check?type=all', null, {
           headers: {
             'Authorization': `Bearer ${token}`
           }})

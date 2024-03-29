@@ -30,7 +30,7 @@
 import Editor from '../components/EditorComponent.vue'
 import commandReq from 'components/commandReq';
 import {ref, onMounted} from 'vue';
-import axios from 'axios';
+import {api} from 'boot/axios';
 import Swal from 'sweetalert2'
 import {useQuasar} from 'quasar';
 
@@ -142,7 +142,7 @@ const save = () => {
         filename: selectFolder.value + '/' + selectFile.value,
         //time: new Date().getTime()
       });
-      axios.post('http://8.130.101.128:8081/api/file/save', json, {
+      api.post('/api/file/save', json, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${$q.localStorage.getItem('token')}`
@@ -290,13 +290,13 @@ const imgAdd = (pos, file) => {
   console.log(file);
   const formData = new FormData()
   formData.append('image', file);
-  axios.post('http://8.130.101.128:8081/api/upload', formData, {
+  api.post('/api/upload', formData, {
     headers: {
       'Authorization': `Bearer ${$q.localStorage.getItem('token')}`,
       'content-type': 'multipart/form-data'
     }
   }).then((res) => {
-    const url = `http://8.130.101.128:8081/api/file/get?filename=${res.data.message}`;
+    const url = `/api/file/get?filename=${res.data.message}`;
     content.value = content.value.replace(/!\[[^\]]+\]\([^)]+\)/, `![](${url})`);
   })
 }
