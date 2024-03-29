@@ -87,6 +87,7 @@ jobs:
     - name: Build Windows Package
       run: |
         sed -i "/packager:/a \ \ platform: 'win32'" quasar.config.js
+        sudo apt update
         sudo apt install -y wine64
         quasar build -m electron
         cd dist/electron/Packaged
