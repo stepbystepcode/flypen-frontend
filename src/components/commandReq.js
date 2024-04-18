@@ -1,4 +1,4 @@
-import api from 'src/boot/axios'
+import {api} from 'src/boot/axios'
 import {LocalStorage} from "quasar";
 
 export default function commandReq(com,params1,params2) {
