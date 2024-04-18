@@ -19,6 +19,8 @@
     <div class="row fixed bg-white" :class="store.isMobile?'window-width':'half-width'" style="bottom:0">
       <q-input borderless v-model="message" placeholder="Message" style="flex:1" class="q-px-md"
                @keyup.enter="sendMessage()"></q-input>
+               <p class="ciphertext-value"></p>
+               <p class="decrypted-value"></p>
       <q-btn @click="sendMessage()" flat :disable="!message.length">
         <q-icon color="primary" name="send"></q-icon>
       </q-btn>
@@ -27,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import _sodium from 'libsodium-wrappers';
 import myBg from '../boot/bg.js';
 import {onMounted, ref} from 'vue'
 import {api} from 'boot/axios';
@@ -35,7 +38,13 @@ import {useCheckStore} from 'stores/check';
 import Swal from 'sweetalert2';
 import {useRouter} from 'vue-router';
 import {useQuasar} from 'quasar';
+let socket: WebSocket;
+onMounted(() => {
+  socket = new WebSocket("ws://localhost:9001/");
+})
 
+// await _sodium.ready;
+// const sodium = _sodium;
 const router = useRouter();
 const store = useCheckStore();
 const myAvatar = store.info.avatar
@@ -59,6 +68,7 @@ const config = {
 //     history.value = res.data
 //   })
 // }
+
 const Profile = (e) => {
   if(e.srcElement.parentElement.parentElement.parentElement.dataset?.name){
   router.push(`/profile/${e.srcElement.parentElement.parentElement.parentElement.dataset?.name}`)
@@ -95,7 +105,6 @@ onMounted(() => {
   }, 1000);
   myBg.init();
 })
-
 const sendMessage = async () => {
   try {
     if (!message.value.length) return;
@@ -108,8 +117,59 @@ const sendMessage = async () => {
       })
       return
     }
+    // 从IndexedDB读取加密私钥
+async function retrieveEncryptedPrivateKeyFromIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = window.indexedDB.open('chat-app-db', 1);
+
+    request.onsuccess = (event) => {
+      const db = event.target.result;
+      const transaction = db.transaction(['encrypted-private-keys'], 'readonly');
+      const objectStore = transaction.objectStore('encrypted-private-keys');
+      const getRequest = objectStore.get('private-key');
+
+      getRequest.onsuccess = () => {
+        resolve(getRequest.result.encryptedPrivateKey);
+      };
+
+      getRequest.onerror = (event) => {
+        reject(event.target.error);
+      };
+    };
+
+    request.onerror = (event) => {
+      reject(event.target.error);
+    };
+  });
+}
+socket.addEventListener('open', () => {
+  socket.send(JSON.stringify({
+    type: 'request_pubkey', 
+    recipient: recipientUserId
+  }));
+});
+
+socket.addEventListener('message', async (event) => {
+  const data = JSON.parse(event.data);
+  
+  if (data.type === 'pubkey_response') {
+    const receiverPublicKey = sodium.from_hex(data.publicKey);
+    const sharedKey = sodium.crypto_box_beforenm(receiverPublicKey, keyPair.secretKey);
+
+    const nonce = sodium.randombytes_buf(24);
+    const ciphertext = sodium.crypto_box_easy(message.value, nonce, sharedKey);
+
+    socket.send(JSON.stringify({
+      type: 'message',
+      recipient: recipientUserId, 
+      nonce: sodium.to_hex(nonce),
+      ciphertext: sodium.to_hex(ciphertext)
+    }));
+  }
+});
+    socket.send(retrieveEncryptedPrivateKeyFromIndexedDB());
     await api.post('/api/chat', {
-        content: message.value,
+        content: '123',
         receiver: route.params.id
       }, config
     );

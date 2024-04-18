@@ -85,31 +85,7 @@ async function storeEncryptedPrivateKeyInIndexedDB(encryptedPrivateKey) {
   });
 }
 
-// 从IndexedDB读取加密私钥
-async function retrieveEncryptedPrivateKeyFromIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = window.indexedDB.open('chat-app-db', 1);
 
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction(['encrypted-private-keys'], 'readonly');
-      const objectStore = transaction.objectStore('encrypted-private-keys');
-      const getRequest = objectStore.get('private-key');
-
-      getRequest.onsuccess = () => {
-        resolve(getRequest.result.encryptedPrivateKey);
-      };
-
-      getRequest.onerror = (event) => {
-        reject(event.target.error);
-      };
-    };
-
-    request.onerror = (event) => {
-      reject(event.target.error);
-    };
-  });
-}
   if (username.value === '' || password.value === '' || passwordVer.value === '')
     Swal.fire({
       title: 'Please fill out all required fields.',
