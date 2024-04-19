@@ -113,11 +113,26 @@ for (let i = 0; i < 100; i++) {
   preKeys.push(sodium.crypto_box_keypair());
 }
 const privateKey = keyPair.privateKey;
-
+console.log('privateKey original:');
+console.log(privateKey);
 // 设置用户密码
 const userPassword = password.value;
 // 使用 PBKDF2 派生一个加密密钥。
 const salt = crypto.getRandomValues(new Uint8Array(16));
+const iv = crypto.getRandomValues(new Uint8Array(12));
+//localstorge save salt and iv using base64
+function uint8ArrayToBase64(uint8Array) {
+  let binaryString = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binaryString += String.fromCharCode(uint8Array[i]);
+  }
+  return window.btoa(binaryString);
+}
+const saltBase64 = uint8ArrayToBase64(salt);
+const ivBase64 = uint8ArrayToBase64(iv);
+localStorage.setItem('salt', saltBase64);
+localStorage.setItem('iv', ivBase64);
+
 const iterations = 100000;
 const keyLength = 256;
 const encryptionKey = await crypto.subtle.importKey('raw', new TextEncoder().encode(userPassword), 'PBKDF2', false, ['deriveKey']);
@@ -138,7 +153,7 @@ const derivedKey = await crypto.subtle.deriveKey(
 const encryptedPrivateKey = await crypto.subtle.encrypt(
   {
     name: 'AES-GCM',
-    iv: crypto.getRandomValues(new Uint8Array(12)),
+    iv: iv,
   },
   derivedKey,
   privateKey

@@ -90,7 +90,9 @@
         <transition
           enter-active-class="animated fadeInRight"
         >
+        <suspense>
           <component :is="Component"/>
+        </suspense>
         </transition>
       </router-view>
     </q-page-container>
