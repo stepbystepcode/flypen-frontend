@@ -166,8 +166,7 @@ console.log('Encrypted private key stored in IndexedDB');
       .post('/api/signup', {
         username: username.value,
         password: password.value,
-        publicKey: sodium.to_hex(keyPair.publicKey),
-        preKeys: preKeys.map(k => sodium.to_hex(k.publicKey)) 
+        public_key: sodium.to_hex(keyPair.publicKey),
       })
       .then((res) => {
         const success = res.data.code === 200;

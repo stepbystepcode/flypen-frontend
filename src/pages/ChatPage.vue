@@ -36,6 +36,7 @@ import { useCheckStore } from 'stores/check';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import { encode } from '../utils/crypto-core';
 let socket: WebSocket;
 
 await _sodium.ready;
@@ -102,30 +103,7 @@ onMounted(() => {
   myBg.init();
 })
 // 从IndexedDB读取加密私钥
-async function retrieveEncryptedPrivateKeyFromIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = window.indexedDB.open('chat-app-db', 1);
 
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction(['encrypted-private-keys'], 'readonly');
-      const objectStore = transaction.objectStore('encrypted-private-keys');
-      const getRequest = objectStore.get('private-key');
-
-      getRequest.onsuccess = () => {
-        resolve(getRequest.result.encryptedPrivateKey);
-      };
-
-      getRequest.onerror = (event) => {
-        reject(event.target.error);
-      };
-    };
-
-    request.onerror = (event) => {
-      reject(event.target.error);
-    };
-  });
-}
 const sendMessage = async () => {
   try {
     if (!message.value.length) return;
@@ -138,108 +116,14 @@ const sendMessage = async () => {
       })
       return
     }
-    // api.get(`/api/getKey?recipient=${route.params.id}`).then((response) => {
-    //const receiverPublicKey = sodium.from_hex(response.data);
-    const receiverPublicKey = sodium.crypto_box_keypair().publicKey;
-    const encryptPrivateKey = await retrieveEncryptedPrivateKeyFromIndexedDB();
-    //decrypt begin
-
-    function base64ToUint8Array(base64) {
-      const binaryString = window.atob(base64);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      return bytes;
-    }
-    const salt = base64ToUint8Array(localStorage.getItem('salt'));
-    const iv = base64ToUint8Array(localStorage.getItem('iv'));
-    function getKeyMaterial() {
-      let password = window.prompt("Enter your password");
-      let enc = new TextEncoder();
-      return window.crypto.subtle.importKey(
-        "raw",
-        enc.encode(password),
-        { name: "PBKDF2" },
-        false,
-        ["deriveBits", "deriveKey"]
-      );
-    }
-    function getKey(keyMaterial, salt) {
-      return window.crypto.subtle.deriveKey(
-        {
-          "name": "PBKDF2",
-          salt: salt,
-          "iterations": 100000,
-          "hash": "SHA-256"
-        },
-        keyMaterial,
-        { "name": "AES-GCM", "length": 256 },
-        true,
-        ["encrypt", "decrypt"]
-      );
-    }
-    async function decrypt() {
-      let keyMaterial = await getKeyMaterial();
-      let key = await getKey(keyMaterial, salt);
-
-      try {
-        const privateKey = await window.crypto.subtle.decrypt(
-          {
-            name: "AES-GCM",
-            iv: iv
-          },
-          key,
-          new Uint8Array(encryptPrivateKey)
-        );
-        // 处理解密后的Uint8Array，不进行字符串转换
-        console.log("Decrypted data:", privateKey);
-        console.log("unit8array", new Uint8Array(privateKey));
-        
-        return privateKey;
-      } catch (e) {
-        console.log("Decryption error: ", e);
-      }
-    }
-
-
-    //decrypt end
-    const privateKey=decrypt();
-    console.log("my");
-    console.log(privateKey);
-    console.log("target");
-    console.log(sodium.crypto_box_keypair().privateKey);
-    
-    
-    const messageBytes = sodium.from_string(message.value);
-    const nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
-    const encrypted = sodium.crypto_box_easy(messageBytes, nonce, receiverPublicKey, privateKey);
-    const decrypted = sodium.crypto_box_open_easy(encrypted, nonce, receiverPublicKey, privateKey);
-    const decryptedMessage = sodium.to_string(decrypted);
-    console.log('Encrypted:', sodium.to_hex(encrypted));
-    console.log('Decrypted:', decryptedMessage);
-
-
-    socket.send(JSON.stringify({
-      type: 'message',
-      recipient: recipientUserId, 
-      nonce: sodium.to_hex(nonce),
-      ciphertext: sodium.to_hex(ciphertext)
-    }));
-    api.post('/api/chat', {
-      content: encryptedMessageBase64,
-      receiver: route.params.id
-    }, config
-    );
-    message.value = '';
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-      });
-    }, 900);
-    // });
+      encode(message.value,route.params.id);
+      message.value = '';
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 900);
   } catch (error) {
     console.log(error)
   }
