@@ -37,11 +37,8 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { encode } from '../utils/crypto-core';
-import { StoreInfo } from '../types';
 let socket: WebSocket;
 
-await _sodium.ready;
-const sodium = _sodium;
 const router = useRouter();
 const store = useCheckStore();
 const myAvatar = store.info.avatar

@@ -32,13 +32,13 @@ export const useCheckStore = defineStore('check', () => {
            
 
             const key = Object.keys(res.data.message)[0];
-            decode(res.data.message[key][0].content, res.data.message[key][0].sender);
             if (!history.value[key]) history.value[key] = [];
             history.value[key] = [...history.value[key], ...res.data.message[key]];
             if (!unread.value[key])
               unread.value[key] = 0;
-            if (res.data.message[key][0].sender !== info.value.username)
+            if (res.data.message[key][0].sender !== info.value.username){
               unread.value[key] += res.data.message[key].length;
+            decode(res.data.message[key][0].content, res.data.message[key][0].sender);}
             LocalStorage.set('history', history.value)
             if (!order.value) order.value = {};
             if (!(key in order.value)) order.value[key] = [];

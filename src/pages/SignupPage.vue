@@ -113,8 +113,9 @@ for (let i = 0; i < 100; i++) {
   preKeys.push(sodium.crypto_box_keypair());
 }
 const privateKey = keyPair.privateKey;
-console.log('privateKey original:');
-console.log(privateKey);
+console.log('I\'m:', username.value);
+console.log('Private key:', privateKey);
+console.log('Public key:', keyPair.publicKey);
 // 设置用户密码
 const userPassword = password.value;
 // 使用 PBKDF2 派生一个加密密钥。
