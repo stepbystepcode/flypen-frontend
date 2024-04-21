@@ -9,7 +9,6 @@ const config = {
   }
 }
 import { api } from 'boot/axios';
-import { log } from 'console';
 const sodium = _sodium;
 async function retrieveEncryptedPrivateKeyFromIndexedDB() {
   return new Promise((resolve, reject) => {
@@ -95,6 +94,15 @@ async function decrypt(salt: Uint8Array, iv: Uint8Array) {
     console.log('Decryption error: ', e);
   }
 }
+let nonce: Uint8Array;
+setTimeout(() => {
+      nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
+      console.log('nonceinit:', sodium.to_hex(nonce));
+      console.log('nonceinit:', nonce);
+      console.log('nonceinit:', sodium.from_hex(sodium.to_hex(nonce)));
+
+
+}, 1);
 
 export const encode = (message: string, username: string) => {
   console.log('用谁的公钥加密:', username);
@@ -109,24 +117,20 @@ export const encode = (message: string, username: string) => {
 
     decrypt(salt, iv).then((privateKey) => {
       const messageBytes = sodium.from_string(message);
-      const nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
-      
       console.log('final私钥：', privateKey);
       console.log('final公钥：', receiverPublicKey);
-      const encrypted = sodium.crypto_box_easy(messageBytes, nonce, receiverPublicKey, privateKey as Uint8Array);
+      console.log('nonce:', nonce);
+      const encrypted = sodium.crypto_box_easy(messageBytes, sodium.from_hex("a8f70805c6c00e11948b861a7446c2a15e670e66734e58b5"), receiverPublicKey, privateKey as Uint8Array);
       console.log('encrypted:', encrypted);
-      // const decrypted = sodium.crypto_box_open_easy(encrypted, nonce, receiverPublicKey, privateKey);
-      console.log('Encrypted:', sodium.to_hex(encrypted));
-      // console.log('Decrypted:', sodium.to_string(decrypted));
 
       // socket.send(JSON.stringify({
       //   type: 'message',
-      //   recipient: recipientUserId, 
+      //   recipient: recipientUserId,
       //   nonce: sodium.to_hex(nonce),
       //   ciphertext: sodium.to_hex(encrypted)
       // }));
       api.post('/api/chat', {
-        content: sodium.to_hex(encrypted),
+        content: sodium.to_base64(encrypted),
         receiver: username
       }, config
       );
@@ -141,17 +145,19 @@ export const decode = (message: string, username: string) => {
     const salt = base64ToUint8Array(localStorage.getItem('salt') as string);
     const iv = base64ToUint8Array(localStorage.getItem('iv') as string);
     decrypt(salt, iv).then((privateKey) => {
-      console.log('message:', message);
-      const nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
+      console.log('待解密:', sodium.from_base64(message));
+      // const nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
       // console.log('nonce:', sodium.from_hex(nonce));
       // const encrypted = sodium.crypto_box_easy(messageBytes, nonce, receiverPublicKey, privateKey);
       console.log('final私钥：', privateKey);
       console.log('final公钥：', receiverPublicKey);
-      const decrypted = sodium.crypto_box_open_easy(message, nonce, receiverPublicKey, privateKey as Uint8Array);
+      console.log('nonce:', nonce);
+
+      const decrypted = sodium.crypto_box_open_easy(sodium.from_base64(message), sodium.from_hex("a8f70805c6c00e11948b861a7446c2a15e670e66734e58b5"), receiverPublicKey, privateKey as Uint8Array);
       console.log('Decrypted:', sodium.to_string(decrypted));
       // socket.send(JSON.stringify({
       //   type: 'message',
-      //   recipient: recipientUserId, 
+      //   recipient: recipientUserId,
       //   nonce: sodium.to_hex(nonce),
       //   ciphertext: sodium.to_hex(encrypted)
       // }));
