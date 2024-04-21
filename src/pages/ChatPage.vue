@@ -30,13 +30,14 @@
 import _sodium from 'libsodium-wrappers';
 import myBg from '../boot/bg.js';
 import { onMounted, ref } from 'vue'
-import axios, { api } from 'boot/axios';
+import { api } from 'boot/axios';
 import { useRoute } from 'vue-router'
 import { useCheckStore } from 'stores/check';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { encode } from '../utils/crypto-core';
+import { StoreInfo } from '../types';
 let socket: WebSocket;
 
 await _sodium.ready;
@@ -90,7 +91,7 @@ onMounted(() => {
     }
     store.info = {
       ...store.info,
-      ...res.data.message[route.params.id],
+      ...res.data.message[route.params.id[0]],
       friends: store.info.friends,
       avatar: store.info.avatar
     };
